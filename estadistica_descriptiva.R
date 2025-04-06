@@ -69,10 +69,34 @@ ggplot(estudiantes_3_materias, aes(x = rango_promedio)) +
 
 
 # ------- CUATRO MATERIAS ---------------
+estudiantes_4_materias <- datos %>%
+  filter(cantidad_de_materias == 4)
+
+estadisticas_4_promedio <- estudiantes_4_materias %>%
+  summarise(
+    media = mean(promedio, na.rm = TRUE), # na.rm(na.remove) = evitamos los datos perdidos los NA
+    mediana = median(promedio, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(promedio, na.rm = TRUE),
+    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
+    sesgo = skewness(promedio, na.rm = TRUE),
+    curtosis = kurtosis(promedio, na.rm = TRUE)
+  )
 
 
+estudiantes_4_materias <- estudiantes_4_materias %>%
+  mutate(rango_promedio = cut(promedio, breaks = c(4, 5, 6, 7, 8, 9, 10), 
+                              labels = c("4-5", "5-6", "6-7", "7-8", "8-9", "9-10"),
+                              right = FALSE))
 
 
+# Graficar histograma agrupado por los rangos de promedio
+ggplot(estudiantes_4_materias, aes(x = rango_promedio)) +
+  geom_bar(fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribución de Promedios - Estudiantes que ven 4 materias",
+       x = "Rango de Promedio", y = "Frecuencia") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 1)) 
 
 
 # ------- BOXPLOT CONJUNTO ---------------
