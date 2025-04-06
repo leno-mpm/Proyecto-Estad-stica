@@ -27,9 +27,59 @@ datos <- datos %>%
   ))
 
 
-head(datos)
+##########################################################################
+
+      #ANALISIS DE POTENCIAL POR CANTIDAD DE MATERIAS VISTAS
+
+datos <- datos %>%
+  mutate(cantidad_de_materias = ifelse(is.na(`NOTA ÁLGEBRA`), 3, 4))
+
+# ------- TRES MATERIAS ---------------
+estudiantes_3_materias <- datos %>%
+  filter(cantidad_de_materias == 3)
+
+estadisticas_3_promedio <- estudiantes_3_materias %>%
+  summarise(
+    media = mean(promedio, na.rm = TRUE),
+    mediana = median(promedio, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(promedio, na.rm = TRUE),
+    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
+    sesgo = skewness(promedio, na.rm = TRUE),
+    curtosis = kurtosis(promedio, na.rm = TRUE)
+  )
+
+# Mostrar las estadísticas
+print("Estadísticas para estudiantes que ven 3 materias (promedio):")
+print(estadisticas_3_promedio)
+print("Gráfica de Sesgo:")
+estudiantes_3_materias <- estudiantes_3_materias %>%
+  mutate(rango_promedio = cut(promedio, breaks = c(4, 5, 6, 7, 8, 9, 10), 
+                              labels = c("4-5", "5-6", "6-7", "7-8", "8-9", "9-10"),
+                              right = FALSE))
+
+# Graficar histograma agrupado por los rangos de promedio
+ggplot(estudiantes_3_materias, aes(x = rango_promedio)) +
+  geom_bar(fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Distribución de Promedios - Estudiantes que ven 3 materias",
+       x = "Rango de Promedio", y = "Frecuencia") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 1))  
+
+
+
+# ------- CUATRO MATERIAS ---------------
 
 
 
 
+
+
+# ------- BOXPLOT CONJUNTO ---------------
+
+
+
+
+
+##########################################################################
 
