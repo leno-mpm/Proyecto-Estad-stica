@@ -100,9 +100,12 @@ ggplot(estudiantes_4_materias, aes(x = rango_promedio)) +
 
 
 # ------- BOXPLOT CONJUNTO ---------------
+promedios_3_materias <- estudiantes_3_materias$promedio
+promedios_4_materias <- estudiantes_4_materias$promedio
 
 
-
+boxplot(promedios_3_materias, promedios_4_materias, names = c("Est. con 3 materias", "Est. con 4 materias"),
+        main = "Promedio de Estudiantes", ylab = "Potencial", col = c("blue", "green"))
 
 
 ##########################################################################
