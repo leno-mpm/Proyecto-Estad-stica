@@ -79,12 +79,49 @@ print("Boxplot")
 
 ##########################################################################
 print("Estadísticas descriptivas de Fundamentos de Programación")
+
+programacion <- datos$`NOTA FUND. PROG.`
+programacion <- na.omit(programacion)
+summary(programacion)
+describe(programacion)
+media <- mean(programacion)
+mediana <- median(programacion)
+moda <- as.numeric(names(sort(table(programacion), decreasing = TRUE)[1]))
+varianza <- var(programacion)
+desviacion <- sd(programacion)
+coef_var <- sd(programacion) / mean(programacion)
+asimetria <- skewness(programacion)
+curtosis <- kurtosis(programacion)
+
+print("Estadísticos de Programación")
+cat("Media:", media, "\n")
+cat("Mediana:", mediana, "\n")
+cat("Moda:", moda, "\n")
+cat("Varianza:", varianza, "\n")
+cat("Desviación estándar:", desviacion, "\n")
+cat("Coeficiente de variación:", coef_var, "\n")
+cat("Asimetría:", asimetria, "\n")
+cat("Curtosis:", curtosis, "\n")
+
 print("Histogramas de frecuencia")
+ggplot(datos, aes(x = `NOTA FUND. PROG.`)) +
+  geom_histogram(binwidth = 1, fill = "steelblue", color = "black") +
+  labs(
+    title = "Histograma de Frecuencias - Fundamentos de Programación",
+    x = "Nota",
+    y = "Frecuencia"
+  ) +
+  theme_minimal()
+
 print("Boxplot")
-#FRANCISCO Y MILENA
-
-
-
+# Boxplot
+ggplot(datos, aes(y = `NOTA FUND. PROG.`)) +
+  geom_boxplot(fill = "tomato", color = "black") +
+  labs(
+    title = "Boxplot - Fundamentos de Programación",
+    y = "Nota"
+  ) +
+  theme_minimal()
 
 
 
@@ -111,11 +148,18 @@ print("Boxplot")
 ##########################################################################
 
 print("Distribución de estudiantes por carrera")
+print(table(datos$CARRERA))
+
+
 print("Gráfico de barras")
-print("Boxplot")
-#FRANCISCO Y MILENA
-
-
+ggplot(datos, aes(x = CARRERA)) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(
+    title = "Distribución de Estudiantes por Carrera",
+    x = "Carrera",
+    y = "Cantidad de Estudiantes"
+  ) +
+  theme_minimal()
 
 
 
@@ -128,6 +172,5 @@ print("Boxplot")
 
 print("Distribución de estudiantes por horario")
 print("Gráfico de barras")
-print("Boxplot")
 #FRANCISCO Y MILENA
 

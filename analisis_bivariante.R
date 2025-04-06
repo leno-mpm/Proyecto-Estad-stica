@@ -58,7 +58,7 @@ estadisticas_3_promedio <- estudiantes_3_materias %>%
     curtosis = kurtosis(promedio, na.rm = TRUE)
   )
 
-print("Estadísticas para estudiantes que ven 3 materias (promedio):")
+print("Estadísticas para estudiantes que ven 3 materias (promedio|potencial):")
 print(estadisticas_3_promedio)
 print("Gráfica de Frecuencias")
 estudiantes_3_materias <- estudiantes_3_materias %>%
@@ -67,8 +67,8 @@ estudiantes_3_materias <- estudiantes_3_materias %>%
                               right = FALSE))
 ggplot(estudiantes_3_materias, aes(x = rango_promedio)) +
   geom_bar(fill = "blue", color = "black", alpha = 0.7) +
-  labs(title = "Distribución de Promedios - Estudiantes que ven 3 materias",
-       x = "Rango de Promedio", y = "Frecuencia") +
+  labs(title = "Distribución de Potencial - Estudiantes que ven 3 materias",
+       x = "Rango de Promedio | Potencial", y = "Frecuencia") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 0, hjust = 1))  
 
@@ -89,7 +89,7 @@ estadisticas_4_promedio <- estudiantes_4_materias %>%
     curtosis = kurtosis(promedio, na.rm = TRUE)
   )
 
-print("Estadísticas para estudiantes que ven 4 materias (promedio):")
+print("Estadísticas para estudiantes que ven 4 materias (promedio|potencial):")
 print(estadisticas_4_promedio)
 print("Gráfica de Frecuencias")
 estudiantes_4_materias <- estudiantes_4_materias %>%
@@ -98,8 +98,8 @@ estudiantes_4_materias <- estudiantes_4_materias %>%
                               right = FALSE))
 ggplot(estudiantes_4_materias, aes(x = rango_promedio)) +
   geom_bar(fill = "blue", color = "black", alpha = 0.7) +
-  labs(title = "Distribución de Promedios - Estudiantes que ven 4 materias",
-       x = "Rango de Promedio", y = "Frecuencia") +
+  labs(title = "Distribución de Potencial - Estudiantes que ven 4 materias",
+       x = "Rango de Promedio | Potencial", y = "Frecuencia") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 0, hjust = 1)) 
 
@@ -125,7 +125,7 @@ boxplot(promedios_3_materias, promedios_4_materias, names = c("Est. con 3 materi
 print("Comparación de potencial vs Materias (Álgebra, Cálculo, Estadística, Programación)")
 print("¿Hay relación entre la nota en una materia específica (como Cálculo o Estadística) y el Potencial?")
 print("¿Cuál materia tiene mayor influencia en el rendimiento total?")
-
+#Estadísticos
 #Boxplot
 #Matriz de Correlacion
 
@@ -144,7 +144,7 @@ print("¿Cuál materia tiene mayor influencia en el rendimiento total?")
 print("Comparacion de potencial por género") 
 print("¿Hay diferencias en el Potencial promedio entre hombres y mujeres?")
 print("¿Algún género tiende a tener mejor rendimiento?")
-  
+#Estadísticos
 #Boxplot
 #Matriz de Correlacion
 
@@ -167,7 +167,7 @@ print("¿Algún género tiende a tener mejor rendimiento?")
 print("Comparación del Potencial por horario")
 print("¿Influye el horario de estudio en el rendimiento?")
   
- 
+#Estadísticos
 #Boxplot
 #Matriz de Correlacion
 #FRANCISCO Y MILENA
@@ -191,6 +191,7 @@ print("¿Influye el horario de estudio en el rendimiento?")
 
 print("Comparación del Potencial por carrera")
 print("¿Hay carreras cuyos estudiantes presentan mayor Potencial?")
+#Estadísticos
 #Boxplot
 #Matriz de Correlacion
 #GABRIEL Y JAIRO
@@ -213,7 +214,7 @@ print("¿Hay carreras cuyos estudiantes presentan mayor Potencial?")
 print("Comparación del Sexo vs Horario")
 print("¿Hay relación entre el sexo del estudiante y el horario en que estudia?")
 print("¿Ciertos turnos están dominados por hombres o mujeres?")
-
+#Estadísticos
 #Tabla de contigencia
 #PRuebas de independencia Chi-cuadrado
 
