@@ -4,6 +4,7 @@ library(ggplot2)
 library(psych)
 library(e1071)
 library(corrplot)
+library(tidyr)
 
 archivo <- "Datos_Proyecto.xlsx"
 datos <- read_excel(archivo)
@@ -130,11 +131,109 @@ ggplot(datos, aes(x = cantidad_de_materias, y = promedio, fill = cantidad_de_mat
 print("Comparación de potencial vs Materias (Álgebra, Cálculo, Estadística, Programación)")
 print("¿Hay relación entre la nota en una materia específica (como Cálculo o Estadística) y el Potencial?")
 print("¿Cuál materia tiene mayor influencia en el rendimiento total?")
-#Estadísticos
+
+#Estadísticos por materia
+
+#ESTADISTICA
+
+estadistica <- datos %>%
+  filter(!is.na(`NOTA ESTADÍSTICA`)) 
+
+estadisticas_estadistica <- estadistica %>%
+  summarise(
+    media = mean(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    mediana = median(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(`NOTA ESTADÍSTICA`), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    rango_intercuartilico = IQR(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    sesgo = skewness(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    curtosis = kurtosis(`NOTA ESTADÍSTICA`, na.rm = TRUE)
+  )
+print(estadisticas_estadistica)
+
+#ALGEBRA
+
+algebra <- datos %>%
+  filter(!is.na(`NOTA ÁLGEBRA`)) 
+
+estadisticas_algebra <- algebra %>%
+  summarise(
+    media = mean(`NOTA ÁLGEBRA`, na.rm = TRUE),
+    mediana = median(`NOTA ÁLGEBRA`, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(`NOTA ÁLGEBRA`), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(`NOTA ÁLGEBRA`, na.rm = TRUE),
+    rango_intercuartilico = IQR(`NOTA ÁLGEBRA`, na.rm = TRUE),
+    sesgo = skewness(`NOTA ÁLGEBRA`, na.rm = TRUE),
+    curtosis = kurtosis(`NOTA ÁLGEBRA`, na.rm = TRUE)
+  )
+print(estadisticas_algebra)
+
+#CALCULO
+
+calculo <- datos %>%
+  filter(!is.na(`NOTA CÁLCULO`)) 
+
+estadisticas_calculo <- calculo %>%
+  summarise(
+    media = mean(`NOTA CÁLCULO`, na.rm = TRUE),
+    mediana = median(`NOTA CÁLCULO`, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(`NOTA CÁLCULO`), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(`NOTA CÁLCULO`, na.rm = TRUE),
+    rango_intercuartilico = IQR(`NOTA CÁLCULO`, na.rm = TRUE),
+    sesgo = skewness(`NOTA CÁLCULO`, na.rm = TRUE),
+    curtosis = kurtosis(`NOTA CÁLCULO`, na.rm = TRUE)
+  )
+print(estadisticas_calculo)
+
+#FP
+
+fp <- datos %>%
+  filter(!is.na(`NOTA FUND. PROG.`)) 
+
+estadisticas_fp <- fp %>%
+  summarise(
+    media = mean(`NOTA FUND. PROG.`, na.rm = TRUE),
+    mediana = median(`NOTA FUND. PROG.`, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(`NOTA FUND. PROG.`), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(`NOTA FUND. PROG.`, na.rm = TRUE),
+    rango_intercuartilico = IQR(`NOTA FUND. PROG.`, na.rm = TRUE),
+    sesgo = skewness(`NOTA FUND. PROG.`, na.rm = TRUE),
+    curtosis = kurtosis(`NOTA FUND. PROG.`, na.rm = TRUE)
+  )
+print(estadisticas_fp)
+
 #Boxplot
+
+print("Boxplot Potencial vs Materias")
+
+materias <- datos %>%
+  pivot_longer(cols = c(`NOTA ESTADÍSTICA`, `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`),
+               names_to = "Materia",
+               values_to = "Nota") %>%
+  filter(!is.na(promedio))
+
+ggplot(materias, aes(x = Materia, y = promedio)) +
+  geom_boxplot(fill = "turquoise4", alpha = 0.7) +
+  labs(title = "Promedio del Potencial vs Estadística",
+       x = "Materia", y = "Promedio (Potencial)") +
+  theme_minimal()
+
+
 #Matriz de Correlacion
 
-#JAIRO
+# Seleccionamos solo columnas de notas y quitamos filas con NA
+potencialVSmaterias <- datos %>%
+  select(`NOTA ESTADÍSTICA`, `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`) %>%
+  na.omit()
+
+# Calculamos matriz de correlación
+matriz <- cor(potencialVSmaterias)
+
+# Mostramos la matriz
+print("Matriz de correlación:")
+print(matriz)
+
+
 
 
 
