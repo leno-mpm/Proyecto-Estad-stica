@@ -69,14 +69,33 @@ ggplot(algebra, aes(y = `NOTA ÁLGEBRA`)) +
 print("Estadísticas descriptivas de Estadística")
 print("Histogramas de frecuencia")
 print("Boxplot")
-#GABRIEL Y JAIRO
 
+estadistica <- datos %>%
+  filter(!is.na(`NOTA ESTADÍSTICA`)) 
 
+estadisticas_estadistica <- estadistica %>%
+  summarise(
+    media = mean(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    mediana = median(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(`NOTA ESTADÍSTICA`), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    rango_intercuartilico = IQR(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    sesgo = skewness(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    curtosis = kurtosis(`NOTA ESTADÍSTICA`, na.rm = TRUE)
+  )
+print(estadisticas_estadistica)
 
+print("Histograma de frecuencias - Estadística")
+ggplot(estadistica, aes(x = `NOTA ESTADÍSTICA`)) +
+  geom_histogram(binwidth = 0.45, fill = "lightblue", color = "black") +
+  labs(title = "Histograma de Notas de Estadística", x = "Nota", y = "Frecuencia") +
+  theme_minimal()
 
-
-
-
+print("Boxplot - Estadística")
+ggplot(estadistica, aes(y = `NOTA ESTADÍSTICA`)) +
+  geom_boxplot(fill = "lightblue", color = "black") +
+  labs(title = "Boxplot de Notas de Estadística", y = "Nota") +
+  theme_minimal()
 
 
 
