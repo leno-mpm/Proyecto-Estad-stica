@@ -301,7 +301,7 @@ print("¿Hay carreras cuyos estudiantes presentan mayor Potencial?")
 #Estadísticos por carrera (media, mediana, moda, etc)
 
 # Estudiantes con 3 materias
-estadisticas_3_por_carrera <- datos_3_materias %>%
+estadisticas_3_por_carrera <- estudiantes_3_materias %>%
   group_by(CARRERA) %>%
   summarise(
     media = mean(promedio, na.rm = TRUE),
@@ -319,7 +319,7 @@ print(estadisticas_3_por_carrera)
 
 # Estudiantes con 4 materias
 
-estadisticas_4_por_carrera <- datos_4_materias %>%
+estadisticas_4_por_carrera <- estudiantes_4_materias %>%
   group_by(CARRERA) %>%
   summarise(
     media = mean(promedio, na.rm = TRUE),
@@ -338,12 +338,8 @@ print(estadisticas_4_por_carrera)
 
 #Boxplot
 
-# Filtramos por cantidad de materias
-datos_3_materias <- datos %>% filter(cantidad_de_materias == 3)
-datos_4_materias <- datos %>% filter(cantidad_de_materias == 4)
-
 # Gráfico para estudiantes con 3 materias
-ggplot(datos_3_materias, aes(x = CARRERA, y = promedio)) +
+ggplot(estudiantes_3_materias, aes(x = CARRERA, y = promedio)) +
   geom_boxplot(fill = "tomato", alpha = 0.7) +
   labs(title = "Potencial por Carrera - Estudiantes con 3 materias",
        x = "Carrera", y = "Promedio (Potencial)") +
@@ -351,7 +347,7 @@ ggplot(datos_3_materias, aes(x = CARRERA, y = promedio)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 # Gráfico para estudiantes con 4 materias
-ggplot(datos_4_materias, aes(x = CARRERA, y = promedio)) +
+ggplot(estudiantes_4_materias, aes(x = CARRERA, y = promedio)) +
   geom_boxplot(fill = "turquoise4", alpha = 0.7) +
   labs(title = "Potencial por Carrera - Estudiantes con 4 materias",
        x = "Carrera", y = "Promedio (Potencial)") +
@@ -361,7 +357,7 @@ ggplot(datos_4_materias, aes(x = CARRERA, y = promedio)) +
 #Matriz de Correlacion
 
 # Seleccionamos solo columnas de notas y quitamos filas con NA
-notas_4_materias <- datos_4_materias %>%
+notas_4_materias <- estudiantes_4_materias %>%
   select(`NOTA ESTADÍSTICA`, `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`) %>%
   na.omit()
 
@@ -371,6 +367,7 @@ matriz_correlacion <- cor(notas_4_materias)
 # Mostramos la matriz
 print("Matriz de correlación:")
 print(matriz_correlacion)
+
 
 
 
