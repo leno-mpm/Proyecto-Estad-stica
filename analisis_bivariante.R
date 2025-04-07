@@ -149,18 +149,70 @@ print("¿Cuál materia tiene mayor influencia en el rendimiento total?")
 print("Comparacion de potencial por género") 
 print("¿Hay diferencias en el Potencial promedio entre hombres y mujeres?")
 print("¿Algún género tiende a tener mejor rendimiento?")
-#Estadísticos
+
+#Estudiantes Hombres
+estudiantes_hombre <- datos %>%
+  filter(SEXO == "H")
+
+estadisticas_hombres <- estudiantes_hombre %>%
+  summarise(
+    media = mean(promedio, na.rm = TRUE),
+    mediana = median(promedio, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(promedio, na.rm = TRUE),
+    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
+    sesgo = skewness(promedio, na.rm = TRUE),
+    curtosis = kurtosis(promedio, na.rm = TRUE)
+  )
+
+  #histograma hombres
+  estudiantes_hombre <- estudiantes_hombre %>%
+    mutate(rango_promedio = cut(promedio, breaks = c(4, 5, 6, 7, 8, 9, 10), 
+                                labels = c("4-5", "5-6", "6-7", "7-8", "8-9", "9-10"),
+                                right = FALSE))
+  ggplot(estudiantes_hombre, aes(x = rango_promedio)) +
+    geom_bar(fill = "blue", color = "black", alpha = 0.7) +
+    labs(title = "Distribución de Potencial - Estudiantes Hombres",
+         x = "Rango de Promedio | Potencial", y = "Frecuencia") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 0, hjust = 1)) 
+
+
+#Estudiantes Mujeres
+estudiantes_mujer <- datos %>%
+  filter(SEXO == "M")
+
+estadisticas_mujeres <- estudiantes_mujer %>%
+  summarise(
+    media = mean(promedio, na.rm = TRUE),
+    mediana = median(promedio, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(promedio, na.rm = TRUE),
+    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
+    sesgo = skewness(promedio, na.rm = TRUE),
+    curtosis = kurtosis(promedio, na.rm = TRUE)
+  )
+  #histograma mujeres
+  estudiantes_mujer <- estudiantes_mujer %>%
+    mutate(rango_promedio = cut(promedio, breaks = c(4, 5, 6, 7, 8, 9, 10), 
+                                labels = c("4-5", "5-6", "6-7", "7-8", "8-9", "9-10"),
+                                right = FALSE))
+  ggplot(estudiantes_mujer, aes(x = rango_promedio)) +
+    geom_bar(fill = "blue", color = "black", alpha = 0.7) +
+    labs(title = "Distribución de Potencial - Estudiantes Mujeres",
+         x = "Rango de Promedio | Potencial", y = "Frecuencia") +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 0, hjust = 1)) 
+
 #Boxplot
-#Matriz de Correlacion
+print("Bloxpolt - Potencial vs Est. hombres y mujeres")
+promedios_hombres <- estudiantes_hombre$promedio
+promedios_mujeres <- estudiantes_mujer$promedio
 
-#FRANCISCO Y MILENA
+boxplot(promedios_hombres, promedios_mujeres, names = c("Estudiantes Hombres", "Estudiantes Mujeres"),
+        main = "Promedio de Estudiantes", ylab = "Potencial", col = c("blue", "pink"))
 
-
-
-
-
-
-
+#Matriz de Correlacion aaaa
 
 
 ##########################################################################

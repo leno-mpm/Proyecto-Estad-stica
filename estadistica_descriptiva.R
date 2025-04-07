@@ -135,6 +135,8 @@ ggplot(datos, aes(y = `NOTA FUND. PROG.`)) +
 
 print("Distribución de estudiantes por género")
 print(table(datos$SEXO))
+print("Proporciones de estudiantes por género")
+print(prop.table(table(datos$SEXO)))
 
 # Gráfico de barras por género
 ggplot(datos, aes(x = `SEXO`)) +
@@ -155,7 +157,8 @@ ggplot(datos, aes(x = `SEXO`)) +
 
 print("Distribución de estudiantes por carrera")
 print(table(datos$CARRERA))
-
+print("Proporciones de estudiantes por carrera")
+print(prop.table(table(datos$CARRERA)))
 
 print("Gráfico de barras")
 ggplot(datos, aes(x = CARRERA)) +
@@ -178,6 +181,8 @@ ggplot(datos, aes(x = CARRERA)) +
 
 print("Distribución de estudiantes por horario")
 print(table(datos$`HORARIO TOMADO`))
+print("Proporciones de estudiantes por horario en Estadística")
+print(prop.table(table(datos$`HORARIO TOMADO`)))
 
 print("Gráfico de barras")
 ggplot(datos, aes(x = `HORARIO TOMADO`)) +
@@ -186,4 +191,5 @@ ggplot(datos, aes(x = `HORARIO TOMADO`)) +
        x = "Horario", y = "Frecuencia") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 0, hjust = 1))
+
 
