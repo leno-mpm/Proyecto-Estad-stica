@@ -134,9 +134,15 @@ ggplot(datos, aes(y = `NOTA FUND. PROG.`)) +
 ##########################################################################
 
 print("Distribución de estudiantes por género")
-print("Gráfico de barras")
-print("Boxplot")
-#FRANCISCO Y MILENA
+print(table(datos$SEXO))
+
+# Gráfico de barras por género
+ggplot(datos, aes(x = `SEXO`)) +
+  geom_bar(fill = "skyblue", color = "black", alpha = 0.7) +
+  labs(title = "Distribución de Estudiantes por Género",
+       x = "Género", y = "Frecuencia") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 
 
@@ -171,6 +177,13 @@ ggplot(datos, aes(x = CARRERA)) +
 ##########################################################################
 
 print("Distribución de estudiantes por horario")
+print(table(datos$`HORARIO TOMADO`))
+
 print("Gráfico de barras")
-#FRANCISCO Y MILENA
+ggplot(datos, aes(x = `HORARIO TOMADO`)) +
+  geom_bar(fill = "skyblue", color = "black", alpha = 0.7) +
+  labs(title = "Distribución de Estudiantes por Horario Académico",
+       x = "Horario", y = "Frecuencia") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 1))
 
