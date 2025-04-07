@@ -25,9 +25,34 @@ datos <- datos %>%
 
 ##########################################################################
 print("Estadísticas descriptivas de Álgebra")
-print("Histogramas de frecuencia")
-print("Boxplot")
-#GABRIEL Y JAIRO
+
+algebra <- datos %>%
+  filter(!is.na(`NOTA ÁLGEBRA`)) # Excluye los NA
+
+estadisticas_algebra <- algebra %>%
+  summarise(
+    media = mean(`NOTA ÁLGEBRA`, na.rm = TRUE),
+    mediana = median(`NOTA ÁLGEBRA`, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(`NOTA ÁLGEBRA`), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(`NOTA ÁLGEBRA`, na.rm = TRUE),
+    rango_intercuartilico = IQR(`NOTA ÁLGEBRA`, na.rm = TRUE),
+    sesgo = skewness(`NOTA ÁLGEBRA`, na.rm = TRUE),
+    curtosis = kurtosis(`NOTA ÁLGEBRA`, na.rm = TRUE)
+  )
+print(estadisticas_algebra)
+
+print("Histograma de frecuencias - Álgebra")
+ggplot(algebra, aes(x = `NOTA ÁLGEBRA`)) +
+  geom_histogram(binwidth = 0.5, fill = "skyblue", color = "black") +
+  labs(title = "Histograma de Notas de Álgebra", x = "Nota", y = "Frecuencia") +
+  theme_minimal()
+
+print("Boxplot - Álgebra")
+ggplot(algebra, aes(y = `NOTA ÁLGEBRA`)) +
+  geom_boxplot(fill = "orange", color = "black") +
+  labs(title = "Boxplot de Notas de Álgebra", y = "Nota") +
+  theme_minimal()
+
 
 
 
@@ -61,9 +86,33 @@ print("Boxplot")
 
 ##########################################################################
 print("Estadísticas descriptivas de Cálculo")
-print("Histogramas de frecuencia")
-print("Boxplot")
-#GABRIEL Y JAIRO
+
+calculo <- datos %>%
+  filter(!is.na(`NOTA CÁLCULO`)) # Por si acaso hay NA
+
+estadisticas_calculo <- calculo %>%
+  summarise(
+    media = mean(`NOTA CÁLCULO`, na.rm = TRUE),
+    mediana = median(`NOTA CÁLCULO`, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(`NOTA CÁLCULO`), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(`NOTA CÁLCULO`, na.rm = TRUE),
+    rango_intercuartilico = IQR(`NOTA CÁLCULO`, na.rm = TRUE),
+    sesgo = skewness(`NOTA CÁLCULO`, na.rm = TRUE),
+    curtosis = kurtosis(`NOTA CÁLCULO`, na.rm = TRUE)
+  )
+print(estadisticas_calculo)
+
+print("Histograma de frecuencias - Cálculo")
+ggplot(calculo, aes(x = `NOTA CÁLCULO`)) +
+  geom_histogram(binwidth = 0.5, fill = "lightgreen", color = "black") +
+  labs(title = "Histograma de Notas de Cálculo", x = "Nota", y = "Frecuencia") +
+  theme_minimal()
+
+print("Boxplot - Cálculo")
+ggplot(calculo, aes(y = `NOTA CÁLCULO`)) +
+  geom_boxplot(fill = "lightblue", color = "black") +
+  labs(title = "Boxplot de Notas de Cálculo", y = "Nota") +
+  theme_minimal()
 
 
 
