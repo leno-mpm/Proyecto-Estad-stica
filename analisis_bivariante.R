@@ -3,6 +3,7 @@ library(dplyr)
 library(ggplot2)
 library(psych)
 library(e1071)
+library(corrplot)
 
 archivo <- "Datos_Proyecto.xlsx"
 datos <- read_excel(archivo)
@@ -105,7 +106,18 @@ ggplot(datos, aes(x = cantidad_de_materias, y = promedio, fill = cantidad_de_mat
   scale_fill_manual(values = c("3 materias" = "skyblue", "4 materias" = "seagreen")) +
   theme_minimal()
 
-#FALTA HACER MATRIZ DE CORRELACION
+# ------- Matriz de Correlación ---------------
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -215,6 +227,11 @@ ggplot(datos, aes(x = `HORARIO TOMADO`, y = promedio, fill = `HORARIO TOMADO`)) 
   scale_fill_manual(values = c("07h00 - 09h00" = "skyblue", "09h00 - 11h00" = "orange")) +
   theme_minimal()
 
+# ------- Matriz de Correlación ---------------
+
+
+
+
 
 
 
@@ -251,9 +268,25 @@ print("¿Hay carreras cuyos estudiantes presentan mayor Potencial?")
 print("Comparación del Sexo vs Horario")
 print("¿Hay relación entre el sexo del estudiante y el horario en que estudia?")
 print("¿Ciertos turnos están dominados por hombres o mujeres?")
-#Estadísticos
-#Tabla de contigencia
-#PRuebas de independencia Chi-cuadrado
 
-#FRANCISCO Y MILENA
+tabla_contingencia <- table(datos$SEXO, datos$`HORARIO TOMADO`)
+print("Tabla de Contingencia entre Género y Horario:")
+print(tabla_contingencia)
 
+chi2_test <- chisq.test(tabla_contingencia)
+print("Resultados de la prueba Chi-cuadrado de independencia:")
+print(chi2_test)
+
+if(chi2_test$p.value < 0.05) {
+  print("Existe una relación significativa entre el sexo del estudiante y el horario en que estudia.")
+} else {
+  print("No existe una relación significativa entre el sexo del estudiante y el horario en que estudia.")
+}
+
+# Gráfico de barras apiladas para visualizar la relación
+ggplot(datos, aes(x = `HORARIO TOMADO`, fill = `SEXO`)) +
+  geom_bar(position = "fill", color = "black", alpha = 0.7) +
+  labs(title = "Distribución del Género por Horario Académico",
+       x = "Horario", y = "Proporción", fill = "Género") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
