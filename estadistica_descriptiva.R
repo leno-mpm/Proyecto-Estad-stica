@@ -19,6 +19,14 @@ datos <- datos %>%
   )
 
 
+
+#Calcular el promedio
+datos <- datos %>%
+  mutate(promedio = ifelse(is.na(`NOTA ÁLGEBRA`), 
+                           rowMeans(select(., `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE),
+                           rowMeans(select(., `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE)
+  ))
+
 ##########################################################################
 
              #ANALISIS POR ALGEBRA ~ Variable cuantitativa
@@ -52,13 +60,6 @@ ggplot(algebra, aes(y = `NOTA ÁLGEBRA`)) +
   geom_boxplot(fill = "orange", color = "black") +
   labs(title = "Boxplot de Notas de Álgebra", y = "Nota") +
   theme_minimal()
-
-
-
-
-
-
-
 
 
 ##########################################################################
@@ -101,7 +102,7 @@ ggplot(estadistica, aes(y = `NOTA ESTADÍSTICA`)) +
 
 ##########################################################################
 
-            #ANALISIS POR CÁLCULO~ Variable cuantitativa
+            #ANALISIS POR CÁLCULO ~ Variable cuantitativa
 
 ##########################################################################
 print("Estadísticas descriptivas de Cálculo")
@@ -132,12 +133,6 @@ ggplot(calculo, aes(y = `NOTA CÁLCULO`)) +
   geom_boxplot(fill = "lightblue", color = "black") +
   labs(title = "Boxplot de Notas de Cálculo", y = "Nota") +
   theme_minimal()
-
-
-
-
-
-
 
 
 
@@ -191,6 +186,42 @@ ggplot(datos, aes(y = `NOTA FUND. PROG.`)) +
   ) +
   theme_minimal()
 
+
+##########################################################################
+
+          #ANALISIS POR PROMEDIO ~ Variable cuantitativa
+
+##########################################################################
+
+print("Estadísticas descriptivas del Promedio de Materias Previas")
+
+promedio_df <- datos %>%
+  filter(!is.na(promedio)) 
+
+estadisticas_promedio <- promedio_df %>%
+  summarise(
+    media = mean(promedio, na.rm = TRUE),
+    mediana = median(promedio, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(promedio, na.rm = TRUE),
+    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
+    sesgo = skewness(promedio, na.rm = TRUE),
+    curtosis = kurtosis(promedio, na.rm = TRUE)
+  )
+print(estadisticas_promedio)
+
+print("Histograma de Frecuencias - Promedio")
+ggplot(promedio_df, aes(x = promedio)) +
+  geom_histogram(binwidth = 0.5, fill = "mediumorchid", color = "black") +
+  labs(title = "Histograma de Promedio",
+       x = "Promedio", y = "Frecuencia") +
+  theme_minimal()
+
+print("Boxplot - Promedio")
+ggplot(promedio_df, aes(y = promedio)) +
+  geom_boxplot(fill = "plum", color = "black") +
+  labs(title = "Boxplot del Promedio", y = "Promedio") +
+  theme_minimal()
 
 
 
@@ -259,5 +290,34 @@ ggplot(datos, aes(x = `HORARIO TOMADO`)) +
        x = "Horario", y = "Frecuencia") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 0, hjust = 1))
+
+
+
+
+##########################################################################
+
+    #ANALISIS POR RENDIMIENTO ACADÉMICO ~ Variable cualitativa
+
+##########################################################################
+#El rendimiento se clasificará en dos:
+# Rendimiento alto/bajo basado en el promedio de materias previas (Algebra, Cálculo, Fundamentos)
+#Alto rendiemiento para las notas >= 7.5 y Bajo rendimiento para las notas < 7.5
+
+# Clasificamos el rendimiento
+datos <- datos %>%
+  mutate(RENDIMIENTO = ifelse(promedio >= 7.5, "ALTO", "BAJO"))
+
+print("Distribución de estudiantes por rendimiento académico")
+print(table(datos$RENDIMIENTO))
+print("Proporciones de estudiantes por rendimiento académico")
+print(prop.table(table(datos$RENDIMIENTO)))
+
+# Gráfico de barras de rendimiento académico
+ggplot(datos, aes(x = RENDIMIENTO)) +
+  geom_bar(fill = "lightgreen", color = "black", alpha = 0.7) +
+  labs(title = "Distribución de Estudiantes por Rendimiento Académico",
+       x = "Rendimiento", y = "Frecuencia") +
+  theme_minimal()
+
 
 

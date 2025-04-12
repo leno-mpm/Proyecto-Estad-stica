@@ -4,7 +4,9 @@ library(ggplot2)
 library(psych)
 library(e1071)
 library(corrplot)
+library(ggcorrplot)
 library(tidyr)
+library(tidyr) 
 
 archivo <- "Datos_Proyecto.xlsx"
 datos <- read_excel(archivo)
@@ -21,11 +23,11 @@ datos <- datos %>%
   )
 
 
-#Calcular el potencial
+#Calcular el promedio
 datos <- datos %>%
   mutate(promedio = ifelse(is.na(`NOTA ÁLGEBRA`), 
-                           rowMeans(select(., `NOTA ESTADÍSTICA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE),
-                           rowMeans(select(., `NOTA ESTADÍSTICA`, `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE)
+                           rowMeans(select(., `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE),
+                           rowMeans(select(., `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE)
   ))
 
 
@@ -33,19 +35,18 @@ datos <- datos %>%
 
 ##########################################################################
 
-    # ANALISIS BIVARIANTE (Potencial vs Cantidad de materias vistas)
+    # ANALISIS BIVARIANTE (Promedio vs Cantidad de materias vistas)
 
 ##########################################################################
 
-print("Comparación de potencial por cantidad de materias vistas") 
+print("Comparación de promedio por cantidad de materias vistas") 
 print("¿Influye la cantidad de materias clave (Álgebra, Cálculo, Estadística, Programación) cursadas en el potencial del estudiante?")
 print("¿Tienen mayor potencial quienes han cursado más de estas materias?")
-
 
 datos <- datos %>%
   mutate(cantidad_de_materias = ifelse(is.na(`NOTA ÁLGEBRA`), 3, 4))
 
-# ------- Estadísticas para estudiantes con 3 materias -------
+# Estadísticas descriptivas
 estudiantes_3_materias <- datos %>% filter(cantidad_de_materias == 3)
 estadisticas_3_promedio <- estudiantes_3_materias %>%
   summarise(
@@ -57,11 +58,9 @@ estadisticas_3_promedio <- estudiantes_3_materias %>%
     sesgo = skewness(promedio, na.rm = TRUE),
     curtosis = kurtosis(promedio, na.rm = TRUE)
   )
-print("Estadísticas para estudiantes que ven 3 materias (promedio|potencial):")
+print("Estadísticas para estudiantes que ven 3 materias (promedio):")
 print(estadisticas_3_promedio)
 
-
-# ------- Estadísticas para estudiantes con 4 materias -------
 estudiantes_4_materias <- datos %>% filter(cantidad_de_materias == 4)
 estadisticas_4_promedio <- estudiantes_4_materias %>%
   summarise(
@@ -73,175 +72,41 @@ estadisticas_4_promedio <- estudiantes_4_materias %>%
     sesgo = skewness(promedio, na.rm = TRUE),
     curtosis = kurtosis(promedio, na.rm = TRUE)
   )
-print("Estadísticas para estudiantes que ven 4 materias (promedio|potencial):")
+print("Estadísticas para estudiantes que ven 4 materias (promedio):")
 print(estadisticas_4_promedio)
 
 
-# ------- Análisis conjunto ---------------
 datos <- datos %>%
   mutate(rango_promedio = cut(promedio, breaks = c(4, 5, 6, 7, 8, 9, 10), 
                               labels = c("4-5", "5-6", "6-7", "7-8", "8-9", "9-10"),
                               right = FALSE))
-datos$cantidad_de_materias <- factor(datos$cantidad_de_materias,
-                                     levels = c(3, 4),
-                                     labels = c("3 materias", "4 materias"))
+datos <- datos %>%
+  mutate(cantidad_de_materias_label = factor(cantidad_de_materias,
+                                             levels = c(3, 4),
+                                             labels = c("2 materias", "3 materias")))
 
-
-print("Gráfico de Frecuencias Combinado")
-ggplot(datos, aes(x = rango_promedio, fill = cantidad_de_materias)) +
+# Gráfico de barras
+ggplot(datos, aes(x = rango_promedio, fill = cantidad_de_materias_label)) +
   geom_bar(position = "dodge", color = "black") +
-  labs(title = "Distribución de Potencial por Cantidad de Materias Vistas",
-       x = "Rango de Promedio | Potencial", y = "Frecuencia",
+  labs(title = "Frecuencia de Estudiantes por Rango de Promedio según Materias Cursadas",
+       x = "Rango de Promedio", y = "Frecuencia",
        fill = "Materias Vistas") +
-  scale_fill_manual(values = c("3 materias" = "skyblue", "4 materias" = "seagreen")) +
+  scale_fill_manual(values = c("2 materias" = "skyblue", "3 materias" = "seagreen")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 0, hjust = 1))
 
-
-
-print("Boxplot - Comparación de Potencial por Cantidad de Materias")
-ggplot(datos, aes(x = cantidad_de_materias, y = promedio, fill = cantidad_de_materias)) +
+# Boxplot
+ggplot(datos, aes(x = cantidad_de_materias_label, y = promedio, fill = cantidad_de_materias_label)) +
   geom_boxplot(color = "black", alpha = 0.7) +
-  labs(title = "Boxplot de Potencial por Cantidad de Materias Vistas",
-       x = "Cantidad de Materias", y = "Potencial") +
-  scale_fill_manual(values = c("3 materias" = "skyblue", "4 materias" = "seagreen")) +
-  theme_minimal()
-
-# ------- Matriz de Correlación ---------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##########################################################################
-
-          #ANALISIS BIVARIANTE (Potencial vs Materias)
-
-##########################################################################
-
-print("Comparación de potencial vs Materias (Álgebra, Cálculo, Estadística, Programación)")
-print("¿Hay relación entre la nota en una materia específica (como Cálculo o Estadística) y el Potencial?")
-print("¿Cuál materia tiene mayor influencia en el rendimiento total?")
-
-#Estadísticos por materia
-
-#ESTADISTICA
-
-estadistica <- datos %>%
-  filter(!is.na(`NOTA ESTADÍSTICA`)) 
-
-estadisticas_estadistica <- estadistica %>%
-  summarise(
-    media = mean(`NOTA ESTADÍSTICA`, na.rm = TRUE),
-    mediana = median(`NOTA ESTADÍSTICA`, na.rm = TRUE),
-    moda = as.numeric(names(sort(table(`NOTA ESTADÍSTICA`), decreasing = TRUE)[1])),
-    desviacion_estandar = sd(`NOTA ESTADÍSTICA`, na.rm = TRUE),
-    rango_intercuartilico = IQR(`NOTA ESTADÍSTICA`, na.rm = TRUE),
-    sesgo = skewness(`NOTA ESTADÍSTICA`, na.rm = TRUE),
-    curtosis = kurtosis(`NOTA ESTADÍSTICA`, na.rm = TRUE)
-  )
-print(estadisticas_estadistica)
-
-#ALGEBRA
-
-algebra <- datos %>%
-  filter(!is.na(`NOTA ÁLGEBRA`)) 
-
-estadisticas_algebra <- algebra %>%
-  summarise(
-    media = mean(`NOTA ÁLGEBRA`, na.rm = TRUE),
-    mediana = median(`NOTA ÁLGEBRA`, na.rm = TRUE),
-    moda = as.numeric(names(sort(table(`NOTA ÁLGEBRA`), decreasing = TRUE)[1])),
-    desviacion_estandar = sd(`NOTA ÁLGEBRA`, na.rm = TRUE),
-    rango_intercuartilico = IQR(`NOTA ÁLGEBRA`, na.rm = TRUE),
-    sesgo = skewness(`NOTA ÁLGEBRA`, na.rm = TRUE),
-    curtosis = kurtosis(`NOTA ÁLGEBRA`, na.rm = TRUE)
-  )
-print(estadisticas_algebra)
-
-#CALCULO
-
-calculo <- datos %>%
-  filter(!is.na(`NOTA CÁLCULO`)) 
-
-estadisticas_calculo <- calculo %>%
-  summarise(
-    media = mean(`NOTA CÁLCULO`, na.rm = TRUE),
-    mediana = median(`NOTA CÁLCULO`, na.rm = TRUE),
-    moda = as.numeric(names(sort(table(`NOTA CÁLCULO`), decreasing = TRUE)[1])),
-    desviacion_estandar = sd(`NOTA CÁLCULO`, na.rm = TRUE),
-    rango_intercuartilico = IQR(`NOTA CÁLCULO`, na.rm = TRUE),
-    sesgo = skewness(`NOTA CÁLCULO`, na.rm = TRUE),
-    curtosis = kurtosis(`NOTA CÁLCULO`, na.rm = TRUE)
-  )
-print(estadisticas_calculo)
-
-#FP
-
-fp <- datos %>%
-  filter(!is.na(`NOTA FUND. PROG.`)) 
-
-estadisticas_fp <- fp %>%
-  summarise(
-    media = mean(`NOTA FUND. PROG.`, na.rm = TRUE),
-    mediana = median(`NOTA FUND. PROG.`, na.rm = TRUE),
-    moda = as.numeric(names(sort(table(`NOTA FUND. PROG.`), decreasing = TRUE)[1])),
-    desviacion_estandar = sd(`NOTA FUND. PROG.`, na.rm = TRUE),
-    rango_intercuartilico = IQR(`NOTA FUND. PROG.`, na.rm = TRUE),
-    sesgo = skewness(`NOTA FUND. PROG.`, na.rm = TRUE),
-    curtosis = kurtosis(`NOTA FUND. PROG.`, na.rm = TRUE)
-  )
-print(estadisticas_fp)
-
-#Boxplot
-
-print("Boxplot Potencial vs Materias")
-
-materias <- datos %>%
-  pivot_longer(cols = c(`NOTA ESTADÍSTICA`, `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`),
-               names_to = "Materia",
-               values_to = "Nota") %>%
-  filter(!is.na(promedio))
-
-ggplot(materias, aes(x = Materia, y = promedio)) +
-  geom_boxplot(fill = "turquoise4", alpha = 0.7) +
-  labs(title = "Promedio del Potencial vs Estadística",
-       x = "Materia", y = "Promedio (Potencial)") +
+  labs(title = "Boxplot de Promedio por Cantidad de Materias Vistas",
+       x = "Cantidad de Materias", y = "Promedio") +
+  scale_fill_manual(values = c("2 materias" = "skyblue", "3 materias" = "seagreen")) +
   theme_minimal()
 
 
-#Matriz de Correlacion
-
-# Seleccionamos solo columnas de notas y quitamos filas con NA
-potencialVSmaterias <- datos %>%
-  select(`NOTA ESTADÍSTICA`, `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`) %>%
-  na.omit()
-
-# Calculamos matriz de correlación
-matriz <- cor(potencialVSmaterias)
-
-# Mostramos la matriz
-print("Matriz de correlación:")
-print(matriz)
-
-
-
-
-
-
-
 ##########################################################################
 
-             #ANALISIS BIVARIANTE (Potencial vs Género)
+              #ANALISIS BIVARIANTE (Promedio vs Género)
 
 ##########################################################################
 
@@ -249,7 +114,7 @@ print("Comparacion de potencial por género")
 print("¿Hay diferencias en el Potencial promedio entre hombres y mujeres?")
 print("¿Algún género tiende a tener mejor rendimiento?")
 
-#Estudiantes Hombres
+# Estudiantes Hombres
 estudiantes_hombre <- datos %>%
   filter(SEXO == "H")
 
@@ -264,20 +129,7 @@ estadisticas_hombres <- estudiantes_hombre %>%
     curtosis = kurtosis(promedio, na.rm = TRUE)
   )
 
-  #histograma hombres
-  estudiantes_hombre <- estudiantes_hombre %>%
-    mutate(rango_promedio = cut(promedio, breaks = c(4, 5, 6, 7, 8, 9, 10), 
-                                labels = c("4-5", "5-6", "6-7", "7-8", "8-9", "9-10"),
-                                right = FALSE))
-  ggplot(estudiantes_hombre, aes(x = rango_promedio)) +
-    geom_bar(fill = "blue", color = "black", alpha = 0.7) +
-    labs(title = "Distribución de Potencial - Estudiantes Hombres",
-         x = "Rango de Promedio | Potencial", y = "Frecuencia") +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 0, hjust = 1)) 
-
-
-#Estudiantes Mujeres
+# Estudiantes Mujeres
 estudiantes_mujer <- datos %>%
   filter(SEXO == "M")
 
@@ -291,32 +143,122 @@ estadisticas_mujeres <- estudiantes_mujer %>%
     sesgo = skewness(promedio, na.rm = TRUE),
     curtosis = kurtosis(promedio, na.rm = TRUE)
   )
-  #histograma mujeres
-  estudiantes_mujer <- estudiantes_mujer %>%
-    mutate(rango_promedio = cut(promedio, breaks = c(4, 5, 6, 7, 8, 9, 10), 
-                                labels = c("4-5", "5-6", "6-7", "7-8", "8-9", "9-10"),
-                                right = FALSE))
-  ggplot(estudiantes_mujer, aes(x = rango_promedio)) +
-    geom_bar(fill = "blue", color = "black", alpha = 0.7) +
-    labs(title = "Distribución de Potencial - Estudiantes Mujeres",
-         x = "Rango de Promedio | Potencial", y = "Frecuencia") +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 0, hjust = 1)) 
 
-#Boxplot
-print("Bloxpolt - Potencial vs Est. hombres y mujeres")
+# Histograma comparativo por género
+# Histograma comparativo por género (ajustando rangos válidos)
+datos <- datos %>%
+  mutate(rango_promedio = cut(promedio, 
+                              breaks = c(6, 7, 8, 9, 10), 
+                              labels = c("6-7", "7-8", "8-9", "9-10"),
+                              right = FALSE))
+
+ggplot(datos, aes(x = rango_promedio, fill = SEXO)) +
+  geom_bar(position = "dodge", color = "black", alpha = 0.7) +
+  scale_fill_manual(values = c("H" = "blue", "M" = "pink"), 
+                    labels = c("H" = "Hombres", "M" = "Mujeres")) +
+  labs(title = "Distribución de Potencial por Género",
+       x = "Rango de Promedio | Potencial",
+       y = "Frecuencia",
+       fill = "Género") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 1))
+
+# Boxplot comparativo
+print("Boxplot - Potencial vs Est. hombres y mujeres")
 promedios_hombres <- estudiantes_hombre$promedio
 promedios_mujeres <- estudiantes_mujer$promedio
 
-boxplot(promedios_hombres, promedios_mujeres, names = c("Estudiantes Hombres", "Estudiantes Mujeres"),
-        main = "Promedio de Estudiantes", ylab = "Potencial", col = c("blue", "pink"))
+boxplot(promedios_hombres, promedios_mujeres, 
+        names = c("Estudiantes Hombres", "Estudiantes Mujeres"),
+        main = "Promedio de Estudiantes", 
+        ylab = "Potencial", 
+        col = c("blue", "pink"))
 
-#Matriz de Correlacion aaaa
+
+
+
+
 
 
 ##########################################################################
 
-            #ANALISIS BIVARIANTE (Potencial vs Horario)
+#ANALISIS BIVARIANTE (Nota Estadística vs Género)
+
+##########################################################################
+
+print("Comparación de nota en Estadística por género") 
+print("¿Hay diferencias en la nota de Estadística entre hombres y mujeres?")
+print("¿Algún género tiende a tener mejor desempeño en Estadística?")
+
+# Estudiantes Hombres
+estudiantes_hombre <- datos %>%
+  filter(SEXO == "H")
+
+estadisticas_esta_hombres <- estudiantes_hombre %>%
+  summarise(
+    media = mean(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    mediana = median(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(`NOTA ESTADÍSTICA`), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    rango_intercuartilico = IQR(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    sesgo = skewness(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    curtosis = kurtosis(`NOTA ESTADÍSTICA`, na.rm = TRUE)
+  )
+
+# Estudiantes Mujeres
+estudiantes_mujer <- datos %>%
+  filter(SEXO == "M")
+
+estadisticas_esta_mujeres <- estudiantes_mujer %>%
+  summarise(
+    media = mean(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    mediana = median(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    moda = as.numeric(names(sort(table(`NOTA ESTADÍSTICA`), decreasing = TRUE)[1])),
+    desviacion_estandar = sd(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    rango_intercuartilico = IQR(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    sesgo = skewness(`NOTA ESTADÍSTICA`, na.rm = TRUE),
+    curtosis = kurtosis(`NOTA ESTADÍSTICA`, na.rm = TRUE)
+  )
+
+# Histograma comparativo por género
+datos <- datos %>%
+  mutate(rango_estadistica = cut(`NOTA ESTADÍSTICA`, 
+                                 breaks = c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), 
+                                 labels = c("0-1", "1-2", "2-3", "3-4", "4-5", "5-6", "6-7", "7-8", "8-9", "9-10"),
+                                 right = FALSE))
+
+ggplot(datos, aes(x = rango_estadistica, fill = SEXO)) +
+  geom_bar(position = "dodge", color = "black", alpha = 0.7) +
+  scale_fill_manual(values = c("H" = "blue", "M" = "pink"), 
+                    labels = c("H" = "Hombres", "M" = "Mujeres")) +
+  labs(title = "Distribución de Nota en Estadística por Género",
+       x = "Rango de Nota | Estadística",
+       y = "Frecuencia",
+       fill = "Género") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 1))
+
+# Boxplot comparativo
+print("Boxplot - Estadística vs Est. hombres y mujeres")
+nota_esta_hombres <- estudiantes_hombre$`NOTA ESTADÍSTICA`
+nota_esta_mujeres <- estudiantes_mujer$`NOTA ESTADÍSTICA`
+
+boxplot(nota_esta_hombres, nota_esta_mujeres, 
+        names = c("Estudiantes Hombres", "Estudiantes Mujeres"),
+        main = "Nota en Estadística por Género", 
+        ylab = "Nota", 
+        col = c("blue", "pink"))
+
+
+
+
+
+
+
+
+##########################################################################
+
+            #ANALISIS BIVARIANTE (Promedio vs Horario)
 
 ##########################################################################
 
@@ -366,21 +308,17 @@ datos <- datos %>%
 
 ggplot(datos, aes(x = rango_promedio, fill = `HORARIO TOMADO`)) +
   geom_bar(position = "dodge", color = "black") +
-  labs(title = "Distribución de Potencial por Horario",
-       x = "Rango de Promedio | Potencial", y = "Frecuencia") +
+  labs(title = "Distribución de Promedio por Horario",
+       x = "Rango de Promedio", y = "Frecuencia") +
   scale_fill_manual(values = c("07h00 - 09h00" = "skyblue", "09h00 - 11h00" = "orange")) +
   theme_minimal()
 
 ggplot(datos, aes(x = `HORARIO TOMADO`, y = promedio, fill = `HORARIO TOMADO`)) +
   geom_boxplot() +
-  labs(title = "Boxplot de Potencial según Horario",
-       x = "Horario Tomado", y = "Promedio | Potencial") +
+  labs(title = "Boxplot de Promedio según Horario",
+       x = "Horario Tomado", y = "Promedio") +
   scale_fill_manual(values = c("07h00 - 09h00" = "skyblue", "09h00 - 11h00" = "orange")) +
   theme_minimal()
-
-# ------- Matriz de Correlación ---------------
-
-
 
 
 
@@ -390,7 +328,7 @@ ggplot(datos, aes(x = `HORARIO TOMADO`, y = promedio, fill = `HORARIO TOMADO`)) 
 
 ##########################################################################
   
-                 #ANALISIS BIVARIANTE (Potencial vs Carrera)
+                 #ANALISIS BIVARIANTE (Promedio vs Carrera)
 
 ##########################################################################
 
@@ -399,7 +337,7 @@ print("¿Hay carreras cuyos estudiantes presentan mayor Potencial?")
 
 #Estadísticos por carrera (media, mediana, moda, etc)
 
-# Estudiantes con 3 materias
+# Carreras con 2 materias
 estadisticas_3_por_carrera <- estudiantes_3_materias %>%
   group_by(CARRERA) %>%
   summarise(
@@ -413,10 +351,10 @@ estadisticas_3_por_carrera <- estudiantes_3_materias %>%
     n_estudiantes = n()
   )
 
-print("Estadísticas para estudiantes con 3 materias:")
+print("Estadísticas para carreras de 2 materias:")
 print(estadisticas_3_por_carrera)
 
-# Estudiantes con 4 materias
+# Carreras con 3 materias
 
 estadisticas_4_por_carrera <- estudiantes_4_materias %>%
   group_by(CARRERA) %>%
@@ -431,48 +369,60 @@ estadisticas_4_por_carrera <- estudiantes_4_materias %>%
     n_estudiantes = n()
   )
 
-print("Estadísticas para estudiantes con 4 materias:")
+print("Estadísticas para promedio con 3 materias:")
 print(estadisticas_4_por_carrera)
 
 
 #Boxplot
-
-# Gráfico para estudiantes con 3 materias
+# Gráfico para Carreras con 2 materias
 ggplot(estudiantes_3_materias, aes(x = CARRERA, y = promedio)) +
   geom_boxplot(fill = "tomato", alpha = 0.7) +
-  labs(title = "Potencial por Carrera - Estudiantes con 3 materias",
-       x = "Carrera", y = "Promedio (Potencial)") +
+  labs(title = "Promedio por Carrera - 2 materias",
+       x = "Carrera", y = "Promedio") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-# Gráfico para estudiantes con 4 materias
+# Gráfico para estudiantes con 3 materias
 ggplot(estudiantes_4_materias, aes(x = CARRERA, y = promedio)) +
   geom_boxplot(fill = "turquoise4", alpha = 0.7) +
-  labs(title = "Potencial por Carrera - Estudiantes con 4 materias",
-       x = "Carrera", y = "Promedio (Potencial)") +
+  labs(title = "Potencial por Carrera - Estudiantes con 3 materias",
+       x = "Carrera", y = "Promedio") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-#Matriz de Correlacion
 
-# Seleccionamos solo columnas de notas y quitamos filas con NA
+##########################################################################
+
+              #MATRIZ DE CORRELACIÓN MATERIAS VS MATERIAS
+
+##########################################################################
+
+# Matriz de Correlación - Carreras que ven 4 materias
 notas_4_materias <- estudiantes_4_materias %>%
   select(`NOTA ESTADÍSTICA`, `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`) %>%
   na.omit()
+matriz_correlacion_4 <- cor(notas_4_materias)
+print("Matriz de correlación - Carreras con 4 materias:")
+print(matriz_correlacion_4)
 
-# Calculamos matriz de correlación
-matriz_correlacion <- cor(notas_4_materias)
-
-# Mostramos la matriz
-print("Matriz de correlación:")
-print(matriz_correlacion)
-
-
-
+corrplot(matriz_correlacion_4, method = "color", type = "upper", 
+         col = colorRampPalette(c("blue", "white", "red"))(200), 
+         tl.col = "black", tl.srt = 45, title = "Matriz de Correlación - 4 Materias", 
+         addCoef.col = "black", number.cex = 0.8)
 
 
+# Matriz de Correlación - Carreras que ven 3 materias
+notas_3_materias <- estudiantes_3_materias %>%
+  select(`NOTA ESTADÍSTICA`, `NOTA FUND. PROG.`, `NOTA CÁLCULO`) %>%
+  na.omit()
+matriz_correlacion_3 <- cor(notas_3_materias)
+print("Matriz de correlación - Carreras con 3 materias:")
+print(matriz_correlacion_3)
 
-
+corrplot(matriz_correlacion_3, method = "color", type = "upper", 
+         col = colorRampPalette(c("blue", "white", "red"))(200), 
+         tl.col = "black", tl.srt = 45, title = "Matriz de Correlación - 3 Materias", 
+         addCoef.col = "black", number.cex = 0.8)
 
 
 
