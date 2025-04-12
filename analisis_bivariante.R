@@ -104,6 +104,7 @@ ggplot(datos, aes(x = cantidad_de_materias_label, y = promedio, fill = cantidad_
   theme_minimal()
 
 
+
 ##########################################################################
 
               #ANALISIS BIVARIANTE (Promedio vs Género)
@@ -173,10 +174,6 @@ boxplot(promedios_hombres, promedios_mujeres,
         main = "Promedio de Estudiantes", 
         ylab = "Potencial", 
         col = c("blue", "pink"))
-
-
-
-
 
 
 
@@ -251,11 +248,6 @@ boxplot(nota_esta_hombres, nota_esta_mujeres,
 
 
 
-
-
-
-
-
 ##########################################################################
 
             #ANALISIS BIVARIANTE (Promedio vs Horario)
@@ -319,10 +311,6 @@ ggplot(datos, aes(x = `HORARIO TOMADO`, y = promedio, fill = `HORARIO TOMADO`)) 
        x = "Horario Tomado", y = "Promedio") +
   scale_fill_manual(values = c("07h00 - 09h00" = "skyblue", "09h00 - 11h00" = "orange")) +
   theme_minimal()
-
-
-
-
 
 
 
@@ -391,6 +379,7 @@ ggplot(estudiantes_4_materias, aes(x = CARRERA, y = promedio)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 
+
 ##########################################################################
 
               #MATRIZ DE CORRELACIÓN MATERIAS VS MATERIAS
@@ -423,7 +412,6 @@ corrplot(matriz_correlacion_3, method = "color", type = "upper",
          col = colorRampPalette(c("blue", "white", "red"))(200), 
          tl.col = "black", tl.srt = 45, title = "Matriz de Correlación - 3 Materias", 
          addCoef.col = "black", number.cex = 0.8)
-
 
 
 

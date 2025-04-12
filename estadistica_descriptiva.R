@@ -19,7 +19,6 @@ datos <- datos %>%
   )
 
 
-
 #Calcular el promedio
 datos <- datos %>%
   mutate(promedio = ifelse(is.na(`NOTA ÁLGEBRA`), 
@@ -32,6 +31,7 @@ datos <- datos %>%
              #ANALISIS POR ALGEBRA ~ Variable cuantitativa
 
 ##########################################################################
+
 print("Estadísticas descriptivas de Álgebra")
 
 algebra <- datos %>%
@@ -62,11 +62,13 @@ ggplot(algebra, aes(y = `NOTA ÁLGEBRA`)) +
   theme_minimal()
 
 
+
 ##########################################################################
 
           #ANALISIS POR ESTADÍSTICA ~ Variable cuantitativa
 
 ##########################################################################
+
 print("Estadísticas descriptivas de Estadística")
 print("Histogramas de frecuencia")
 print("Boxplot")
@@ -105,6 +107,7 @@ ggplot(estadistica, aes(y = `NOTA ESTADÍSTICA`)) +
             #ANALISIS POR CÁLCULO ~ Variable cuantitativa
 
 ##########################################################################
+
 print("Estadísticas descriptivas de Cálculo")
 
 calculo <- datos %>%
@@ -141,6 +144,7 @@ ggplot(calculo, aes(y = `NOTA CÁLCULO`)) +
      #ANALISIS POR FUNDAMENTOS DE PROGRAMACIÓN ~ Variable cuantitativa
 
 ##########################################################################
+
 print("Estadísticas descriptivas de Fundamentos de Programación")
 
 programacion <- datos$`NOTA FUND. PROG.`
@@ -187,6 +191,7 @@ ggplot(datos, aes(y = `NOTA FUND. PROG.`)) +
   theme_minimal()
 
 
+
 ##########################################################################
 
           #ANALISIS POR PROMEDIO ~ Variable cuantitativa
@@ -225,7 +230,6 @@ ggplot(promedio_df, aes(y = promedio)) +
 
 
 
-
 ##########################################################################
 
                 #ANALISIS POR GÉNERO ~ Variable cualitativa
@@ -244,7 +248,6 @@ ggplot(datos, aes(x = `SEXO`)) +
        x = "Género", y = "Frecuencia") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
 
 
 
@@ -271,7 +274,6 @@ ggplot(datos, aes(x = CARRERA)) +
 
 
 
-
 ##########################################################################
 
           #ANALISIS POR HORARIO ACADÉMICO ~ Variable cualitativa
@@ -293,12 +295,12 @@ ggplot(datos, aes(x = `HORARIO TOMADO`)) +
 
 
 
-
 ##########################################################################
 
     #ANALISIS POR RENDIMIENTO ACADÉMICO ~ Variable cualitativa
 
 ##########################################################################
+
 #El rendimiento se clasificará en dos:
 # Rendimiento alto/bajo basado en el promedio de materias previas (Algebra, Cálculo, Fundamentos)
 #Alto rendiemiento para las notas >= 7.5 y Bajo rendimiento para las notas < 7.5

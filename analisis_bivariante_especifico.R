@@ -22,14 +22,12 @@ datos <- datos %>%
     `NOTA FUND. PROG.` = as.numeric(as.character(`NOTA FUND. PROG.`))
   )
 
-
 #Calcular el promedio
 datos <- datos %>%
   mutate(promedio = ifelse(is.na(`NOTA ÁLGEBRA`), 
                            rowMeans(select(., `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE),
                            rowMeans(select(., `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE)
   ))
-
 
 
 
@@ -50,7 +48,6 @@ corrplot(cor(materias_df, use = "complete.obs"), method = "color", type = "upper
 
 
 
-
 print("Comparación del Rendimiento vs Nota de Estadística")
 #El rendimiento se clasificará en dos:
 #Rendimiento alto/bajo basado en el promedio de materias previas (Algebra, Cálculo, Fundamentos)
@@ -64,7 +61,6 @@ ggplot(datos, aes(x = rendimiento, y = `NOTA ESTADÍSTICA`, fill = rendimiento))
        y = "Nota de Estadística") +
   scale_fill_manual(values = c("Alto" = "seagreen", "Bajo" = "tomato")) +
   theme_minimal()
-
 
 
 
@@ -85,8 +81,6 @@ ggplot(datos, aes(x = promedio, y = `NOTA ESTADÍSTICA`, color = grupo_color)) +
 print("El gráfico muestra una clara relación positiva entre el promedio de las materias previas (Álgebra, Cálculo y Programación) y la nota obtenida en Estadística.
 Al agrupar por promedio, se observa que los estudiantes con un promedio mayor o igual a 7.5 (color verde) tienden a alcanzar notas más altas en Estadística, en comparación con quienes tienen un promedio menor a 7.5 (color rojo), quienes tienden a concentrarse en calificaciones más bajas.
 Esta visualización refuerza la idea de que el buen desempeño previo está fuertemente asociado con un mejor rendimiento en Estadística, lo que convierte al promedio de las materias anteriores en un indicador valioso para predecir el desempeño académico futuro.")
-
-
 
 
 
@@ -153,9 +147,57 @@ print("El análisis estadístico (Chi-cuadrado, p = 0.503) no evidencia una asoc
 
 
 
+#########################################################################################
+
+                                  #ANÁLISIS BIVARIANTE: 
+    #Nota de Estadística en Estudiantes de Alto Rendimiento según el Horario Académico
+
+#########################################################################################
+
+alto_rendimiento <- datos %>%
+  filter(promedio >= 7.5, !is.na(`NOTA ESTADÍSTICA`), !is.na(`HORARIO TOMADO`))
+
+library(dplyr)
+estadisticas_por_horario <- alto_rendimiento %>%
+  group_by(`HORARIO TOMADO`) %>%
+  summarise(
+    cantidad = n(),
+    media = mean(`NOTA ESTADÍSTICA`),
+    mediana = median(`NOTA ESTADÍSTICA`),
+    desviacion = sd(`NOTA ESTADÍSTICA`),
+    minimo = min(`NOTA ESTADÍSTICA`),
+    maximo = max(`NOTA ESTADÍSTICA`)
+  )
+print("Estadísticas descriptivas por horario (alto rendimiento):")
+print(estadisticas_por_horario)
+
+#Boxplot comparativo
+ggplot(alto_rendimiento, aes(x = `HORARIO TOMADO`, y = `NOTA ESTADÍSTICA`)) +
+  geom_boxplot(fill = "lightgreen", color = "black") +
+  labs(
+    title = "Notas de Estadística según Horario (Estudiantes de Alto Rendimiento)",
+    x = "Horario Tomado",
+    y = "Nota Estadística"
+  ) +
+  theme_minimal()
 
 
 
+#########################################################################################
 
+                                  # ANÁLISIS BIVARIANTE: 
+  #Nota de Estadística en Estudiantes de Bajo Rendimiento según el Horario Académico
 
+#########################################################################################
 
+bajo_rendimiento <- datos %>%
+  filter(promedio < 7.5 & !is.na(`NOTA ESTADÍSTICA`) & !is.na(`HORARIO TOMADO`))
+
+ggplot(bajo_rendimiento, aes(x = `HORARIO TOMADO`, y = `NOTA ESTADÍSTICA`)) +
+  geom_boxplot(fill = "lightcoral", color = "black") +
+  labs(
+    title = "Notas de Estadística según Horario Académico (Bajo Rendimiento)",
+    x = "Horario Académico",
+    y = "Nota en Estadística"
+  ) +
+  theme_minimal()
