@@ -1,4 +1,33 @@
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(psych)
+library(e1071)
+library(corrplot)
+library(ggcorrplot)
+library(tidyr)
+library(tidyr) 
 
+archivo <- "Datos_Proyecto.xlsx"
+datos <- read_excel(archivo)
+str(datos)
+print(datos)
+
+#Convertir datos
+datos <- datos %>%
+  mutate(
+    `NOTA ESTADÍSTICA` = as.numeric(as.character(`NOTA ESTADÍSTICA`)),
+    `NOTA ÁLGEBRA` = as.numeric(as.character(`NOTA ÁLGEBRA`)),
+    `NOTA CÁLCULO` = as.numeric(as.character(`NOTA CÁLCULO`)),
+    `NOTA FUND. PROG.` = as.numeric(as.character(`NOTA FUND. PROG.`))
+  )
+
+#Calcular el promedio
+datos <- datos %>%
+  mutate(promedio = ifelse(is.na(`NOTA ÁLGEBRA`), 
+                           rowMeans(select(., `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE),
+                           rowMeans(select(., `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE)
+  ))
 
 ##########################################################################
 
@@ -26,7 +55,6 @@ print("Ayuda a validar o descartar la hipótesis de que el desempeño en materia
 datos$rendimiento <- ifelse(datos$promedio >= 7.5, "Alto", "Bajo")
 
 prueba_t <- t.test(`NOTA ESTADÍSTICA` ~ rendimiento, data = datos)
-# prueba_t <- t.test(`NOTA ESTADÍSTICA` ~ rendimiento, data = datos)
 print(prueba_t)
 
 if (prueba_t$p.value < 0.05) {
@@ -102,6 +130,9 @@ if (prueba_t_horario$p.value < 0.05) {
 
 # H₀: μA = μB
 # Hₐ: μA ≠ μB
+
+bajo_rendimiento <- datos %>%
+  filter(promedio < 7.5 & !is.na(`NOTA ESTADÍSTICA`) & !is.na(`HORARIO TOMADO`))
 
 prueba_t_horario_bajo <- t.test(`NOTA ESTADÍSTICA` ~ `HORARIO TOMADO`, data = bajo_rendimiento)
 
