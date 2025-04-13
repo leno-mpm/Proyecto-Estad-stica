@@ -40,8 +40,7 @@ datos <- datos %>%
 ##########################################################################
 
 print("Comparación de promedio por cantidad de materias vistas") 
-print("¿Influye la cantidad de materias clave (Álgebra, Cálculo, Estadística, Programación) cursadas en el potencial del estudiante?")
-print("¿Tienen mayor potencial quienes han cursado más de estas materias?")
+print("¿Tienen mayor promedio quienes han cursado materias?")
 
 datos <- datos %>%
   mutate(cantidad_de_materias = ifelse(is.na(`NOTA ÁLGEBRA`), 3, 4))
@@ -112,7 +111,7 @@ ggplot(datos, aes(x = cantidad_de_materias_label, y = promedio, fill = cantidad_
 ##########################################################################
 
 print("Comparacion de potencial por género") 
-print("¿Hay diferencias en el Potencial promedio entre hombres y mujeres?")
+print("¿Hay diferencias en el promedio entre hombres y mujeres?")
 print("¿Algún género tiende a tener mejor rendimiento?")
 
 # Estudiantes Hombres
@@ -172,7 +171,7 @@ promedios_mujeres <- estudiantes_mujer$promedio
 boxplot(promedios_hombres, promedios_mujeres, 
         names = c("Estudiantes Hombres", "Estudiantes Mujeres"),
         main = "Promedio de Estudiantes", 
-        ylab = "Potencial", 
+        ylab = "Promedio", 
         col = c("blue", "pink"))
 
 
@@ -322,6 +321,7 @@ ggplot(datos, aes(x = `HORARIO TOMADO`, y = promedio, fill = `HORARIO TOMADO`)) 
 
 print("Comparación del Potencial por carrera")
 print("¿Hay carreras cuyos estudiantes presentan mayor Potencial?")
+print("Que carrera tiene mejor promedio en cada grupo y  que carrera es la que mejor promedio tiene en general")
 
 #Estadísticos por carrera (media, mediana, moda, etc)
 
