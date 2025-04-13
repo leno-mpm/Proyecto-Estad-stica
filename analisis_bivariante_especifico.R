@@ -157,7 +157,6 @@ print("El análisis estadístico (Chi-cuadrado, p = 0.503) no evidencia una asoc
 alto_rendimiento <- datos %>%
   filter(promedio >= 7.5, !is.na(`NOTA ESTADÍSTICA`), !is.na(`HORARIO TOMADO`))
 
-library(dplyr)
 estadisticas_por_horario <- alto_rendimiento %>%
   group_by(`HORARIO TOMADO`) %>%
   summarise(
