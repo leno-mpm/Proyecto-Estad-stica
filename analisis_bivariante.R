@@ -102,6 +102,8 @@ ggplot(datos, aes(x = cantidad_de_materias_label, y = promedio, fill = cantidad_
   scale_fill_manual(values = c("2 materias" = "skyblue", "3 materias" = "seagreen")) +
   theme_minimal()
 
+# Conclusiones: Existen más estudiantes que cursaron 3 materias en 3 de 4 rangos de promedios  establecidos, 
+# sin embargo, con el diagrama de cajas podemos concluir que los promedios estan aproximadamte igual de concentrados, sin importar si han visto 2 o 3 materias.
 
 
 ##########################################################################
@@ -174,7 +176,9 @@ boxplot(promedios_hombres, promedios_mujeres,
         ylab = "Promedio", 
         col = c("blue", "pink"))
 
-
+# Conclusiones: Además de observar mayor cantidad de hombres que mujeres en el conjunto de datos, en cada
+# rango de promedios y en general predominan mas hombres en promedios mayores a 6, mientras que las mujeres
+# mujeres se concentran más entre 6 a 8, por lo que los hombres tienen mejor rendimiento.
 
 ##########################################################################
 
@@ -245,7 +249,9 @@ boxplot(nota_esta_hombres, nota_esta_mujeres,
         ylab = "Nota", 
         col = c("blue", "pink"))
 
-
+# Conclusiones: Es correcto afirmar que si existen diferencias entre mujeres y hombres al analizar sus
+# notas en estadistica, debido a que los hombres tienen promedios mas concentrados y mayores en comparación 
+# a mas mujeres, aunque en ambos generos existen datos/promedios aberrantes.
 
 ##########################################################################
 
