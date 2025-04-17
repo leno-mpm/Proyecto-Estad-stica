@@ -207,3 +207,4 @@ ggplot(bajo_rendimiento, aes(x = `HORARIO TOMADO`, y = `NOTA ESTADÍSTICA`)) +
 # 1) estudiantes de mejor promedio, horario 7 a 9
 # 2) estudiante de buen rendimiento promedio, horario de 9 a 11
 # 3) estudiantes de mal promedio (io)
+ 
