@@ -251,75 +251,9 @@ boxplot(nota_esta_hombres, nota_esta_mujeres,
 
 # Conclusiones: Es correcto afirmar que si existen diferencias entre mujeres y hombres al analizar sus
 # notas en estadistica, debido a que los hombres tienen promedios mas concentrados y mayores en comparación 
-# a mas mujeres, aunque en ambos generos existen datos/promedios aberrantes.
+# a más mujeres, aunque en ambos géneros existen datos/promedios aberrantes.
 
-##########################################################################
-
-            #ANALISIS BIVARIANTE (Promedio vs Horario)
-
-##########################################################################
-
-print("Comparación del Potencial por horario")
-print("¿Influye el horario de estudio en el rendimiento?")
-datos$`HORARIO TOMADO` <- as.factor(trimws(datos$`HORARIO TOMADO`))
-
-
-# ------- HORARIO 7:00 - 9:00 ---------------
-estudiantes_7a9 <- datos %>% filter(`HORARIO TOMADO` == "07h00 - 09h00")
-estadisticas_7a9 <- estudiantes_7a9 %>%
-  summarise(
-    media = mean(promedio, na.rm = TRUE),
-    mediana = median(promedio, na.rm = TRUE),
-    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
-    desviacion_estandar = sd(promedio, na.rm = TRUE),
-    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
-    sesgo = skewness(promedio, na.rm = TRUE),
-    curtosis = kurtosis(promedio, na.rm = TRUE)
-  )
-print("Estadísticas para estudiantes en el horario 07h00 - 09h00:")
-print(estadisticas_7a9)
-
-
-# ------- HORARIO 9:00 - 11:00 ---------------
-
-estudiantes_9a11 <- datos %>% filter(`HORARIO TOMADO` == "09h00 - 11h00")
-estadisticas_9a11 <- estudiantes_9a11 %>%
-  summarise(
-    media = mean(promedio, na.rm = TRUE),
-    mediana = median(promedio, na.rm = TRUE),
-    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
-    desviacion_estandar = sd(promedio, na.rm = TRUE),
-    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
-    sesgo = skewness(promedio, na.rm = TRUE),
-    curtosis = kurtosis(promedio, na.rm = TRUE)
-  )
-print("Estadísticas para estudiantes en el horario 09h00 - 11h00:")
-print(estadisticas_9a11)
-
-
-# ------- Análisis conjunto ---------------
-datos <- datos %>%
-  mutate(rango_promedio = cut(promedio, breaks = c(4, 5, 6, 7, 8, 9, 10), 
-                              labels = c("4-5", "5-6", "6-7", "7-8", "8-9", "9-10"),
-                              right = FALSE))
-
-ggplot(datos, aes(x = rango_promedio, fill = `HORARIO TOMADO`)) +
-  geom_bar(position = "dodge", color = "black") +
-  labs(title = "Distribución de Promedio por Horario",
-       x = "Rango de Promedio", y = "Frecuencia") +
-  scale_fill_manual(values = c("07h00 - 09h00" = "skyblue", "09h00 - 11h00" = "orange")) +
-  theme_minimal()
-
-ggplot(datos, aes(x = `HORARIO TOMADO`, y = promedio, fill = `HORARIO TOMADO`)) +
-  geom_boxplot() +
-  labs(title = "Boxplot de Promedio según Horario",
-       x = "Horario Tomado", y = "Promedio") +
-  scale_fill_manual(values = c("07h00 - 09h00" = "skyblue", "09h00 - 11h00" = "orange")) +
-  theme_minimal()
-
-
-
-##########################################################################
+#########################################################################
   
                  #ANALISIS BIVARIANTE (Promedio vs Carrera)
 
@@ -385,6 +319,12 @@ ggplot(estudiantes_4_materias, aes(x = CARRERA, y = promedio)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 
+# Conclusiones: La carrera con mejor promedio general es 
+# Ingeniería Agrícola y Biológica, del grupo de 2 materias, con una muestra de 4
+# estudiantes provenientes de esa carrera. Mientras que Computación tiene un promedio de 
+# 7.56, con 47 estudiantes. Siendo Computación la que tiene un sesgo positivo mayor al
+# Agrícola y Biológica, es decir Computación es la que mejor estudiantes sobresalientes tiene
+# aunque Agrícola y Biológica tenga un promedio mayor y menor variabilidad.
 
 ##########################################################################
 
@@ -420,6 +360,16 @@ corrplot(matriz_correlacion_3, method = "color", type = "upper",
          addCoef.col = "black", number.cex = 0.8)
 
 
+# Conclusiones: Dada nuestra matriz de Correlacion, con la materia Estadística incluida, 
+# para las carreras que ven todas las materias, la que mayor correlación tiene con estadística
+# es Algebra, es decir, la que más se relaciona. Al ser un valor de 0.51 es una relación  
+# positiva moderada, los que tienen buena nota en Algebra tienden a sacar buena nota en
+# Estadística; sin embargo no implica causalidad, solo que se mueven de forma similar.
+
+# En cambio, para los que no ven Algebra es distinto y es la materia de cálculo la que 
+# tiene mayor relación con Estadistica, con un valor de 0,34 considerándose así una
+# relación moderada baja, y así mismo si la nota de Cálculo sube, hay tendencia que
+# la de Estadistica tambien suba y viceversa.
 
 ##########################################################################
 
@@ -452,3 +402,10 @@ ggplot(datos, aes(x = `HORARIO TOMADO`, fill = `SEXO`)) +
        x = "Horario", y = "Proporción", fill = "Género") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+# Conclusiones: Hay suficiente prueba estadística para afirmar que no existe una relación
+# significativa entre el sexo del estudiante y el horario escogido. A pesar de ello,
+# se observa una fuerte predominancia del género masculino en ambos horarios, 
+# lo cual podría estar relacionado con el hecho de que, históricamente, 
+# las carreras de ingeniería han contado con una mayor participación de hombres.
