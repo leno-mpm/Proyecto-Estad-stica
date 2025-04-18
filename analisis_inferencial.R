@@ -38,8 +38,8 @@ datos_meca <- datos %>%
   # Grupo de alto rendimiento (promedio previo ≥ 7.5)
   # Grupo de bajo rendimiento (promedio previo < 7.5)
 
-#H₀: μA - μB ≤ 1.30    → La diferencia entre grupos NO es mayor a 0.80 (no vale la pena separar)
-#Hₐ: μA - μB > 1.30    → La diferencia entre grupos SÍ es mayor a 0.80 (sí vale la pena separar)
+#H₀: μA - μB≤ 0.80    → La diferencia entre grupos NO es mayor a 0.80 (no vale la pena separar)
+#Hₐ: μA - μB > 0.80    → La diferencia entre grupos SÍ es mayor a 0.80 (sí vale la pena separar)
 
 datos_meca$rendimiento <- ifelse(datos_meca$promedio >= 7.5, "Alto", "Bajo")
 
@@ -96,8 +96,8 @@ datos_comp <- datos %>%
   # Grupo de alto rendimiento (promedio previo ≥ 7.5)
   # Grupo de bajo rendimiento (promedio previo < 7.5)
 
-#H₀: μA - μB ≤ 1.30    → La diferencia entre grupos NO es mayor a 0.80 (no vale la pena separar)
-#Hₐ: μA - μB > 1.30    → La diferencia entre grupos SÍ es mayor a 0.80 (sí vale la pena separar)
+#H₀: μA - μB ≤ 0.80    → La diferencia entre grupos NO es mayor a 0.80 (no vale la pena separar)
+#Hₐ: μA - μB > 0.80    → La diferencia entre grupos SÍ es mayor a 0.80 (sí vale la pena separar)
 
 datos_comp$rendimiento <- ifelse(datos_comp$promedio >= 7.5, "Alto", "Bajo")
 
