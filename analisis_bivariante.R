@@ -22,88 +22,13 @@ datos <- datos %>%
     `NOTA FUND. PROG.` = as.numeric(as.character(`NOTA FUND. PROG.`))
   )
 
-
-#Calcular el promedio
+# Filtrar solo estudiantes de la carrera de Mecatrónica ó Computación
 datos <- datos %>%
-  mutate(promedio = ifelse(is.na(`NOTA ÁLGEBRA`), 
-                           rowMeans(select(., `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE),
-                           rowMeans(select(., `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE)
-  ))
+  filter(CARRERA == "Mecatrónica") # "Computación" <----- (Puede cambiarse para observar los detalles)
 
-
-
-
-##########################################################################
-
-    # ANALISIS BIVARIANTE (Promedio vs Cantidad de materias vistas)
-
-##########################################################################
-
-print("Comparación de promedio por cantidad de materias vistas") 
-print("¿Tienen mayor promedio quienes han cursado materias?")
-
+# Calcular el promedio
 datos <- datos %>%
-  mutate(cantidad_de_materias = ifelse(is.na(`NOTA ÁLGEBRA`), 3, 4))
-
-# Estadísticas descriptivas
-estudiantes_3_materias <- datos %>% filter(cantidad_de_materias == 3)
-estadisticas_3_promedio <- estudiantes_3_materias %>%
-  summarise(
-    media = mean(promedio, na.rm = TRUE),
-    mediana = median(promedio, na.rm = TRUE),
-    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
-    desviacion_estandar = sd(promedio, na.rm = TRUE),
-    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
-    sesgo = skewness(promedio, na.rm = TRUE),
-    curtosis = kurtosis(promedio, na.rm = TRUE)
-  )
-print("Estadísticas para estudiantes que ven 3 materias (promedio):")
-print(estadisticas_3_promedio)
-
-estudiantes_4_materias <- datos %>% filter(cantidad_de_materias == 4)
-estadisticas_4_promedio <- estudiantes_4_materias %>%
-  summarise(
-    media = mean(promedio, na.rm = TRUE),
-    mediana = median(promedio, na.rm = TRUE),
-    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
-    desviacion_estandar = sd(promedio, na.rm = TRUE),
-    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
-    sesgo = skewness(promedio, na.rm = TRUE),
-    curtosis = kurtosis(promedio, na.rm = TRUE)
-  )
-print("Estadísticas para estudiantes que ven 4 materias (promedio):")
-print(estadisticas_4_promedio)
-
-
-datos <- datos %>%
-  mutate(rango_promedio = cut(promedio, breaks = c(4, 5, 6, 7, 8, 9, 10), 
-                              labels = c("4-5", "5-6", "6-7", "7-8", "8-9", "9-10"),
-                              right = FALSE))
-datos <- datos %>%
-  mutate(cantidad_de_materias_label = factor(cantidad_de_materias,
-                                             levels = c(3, 4),
-                                             labels = c("2 materias", "3 materias")))
-
-# Gráfico de barras
-ggplot(datos, aes(x = rango_promedio, fill = cantidad_de_materias_label)) +
-  geom_bar(position = "dodge", color = "black") +
-  labs(title = "Frecuencia de Estudiantes por Rango de Promedio según Materias Cursadas",
-       x = "Rango de Promedio", y = "Frecuencia",
-       fill = "Materias Vistas") +
-  scale_fill_manual(values = c("2 materias" = "skyblue", "3 materias" = "seagreen")) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 0, hjust = 1))
-
-# Boxplot
-ggplot(datos, aes(x = cantidad_de_materias_label, y = promedio, fill = cantidad_de_materias_label)) +
-  geom_boxplot(color = "black", alpha = 0.7) +
-  labs(title = "Boxplot de Promedio por Cantidad de Materias Vistas",
-       x = "Cantidad de Materias", y = "Promedio") +
-  scale_fill_manual(values = c("2 materias" = "skyblue", "3 materias" = "seagreen")) +
-  theme_minimal()
-
-# Conclusiones: Existen más estudiantes que cursaron 3 materias en 3 de 4 rangos de promedios  establecidos, 
-# sin embargo, con el diagrama de cajas podemos concluir que los promedios estan aproximadamte igual de concentrados, sin importar si han visto 2 o 3 materias.
+  mutate(promedio = rowMeans(select(., `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`), na.rm = TRUE))
 
 
 ##########################################################################
@@ -176,13 +101,11 @@ boxplot(promedios_hombres, promedios_mujeres,
         ylab = "Promedio", 
         col = c("blue", "pink"))
 
-# Conclusiones: Además de observar mayor cantidad de hombres que mujeres en el conjunto de datos, en cada
-# rango de promedios y en general predominan mas hombres en promedios mayores a 6, mientras que las mujeres
-# mujeres se concentran más entre 6 a 8, por lo que los hombres tienen mejor rendimiento.
+
 
 ##########################################################################
 
-#ANALISIS BIVARIANTE (Nota Estadística vs Género)
+         #ANALISIS BIVARIANTE (Nota Estadística vs Género)
 
 ##########################################################################
 
@@ -249,127 +172,7 @@ boxplot(nota_esta_hombres, nota_esta_mujeres,
         ylab = "Nota", 
         col = c("blue", "pink"))
 
-# Conclusiones: Es correcto afirmar que si existen diferencias entre mujeres y hombres al analizar sus
-# notas en estadistica, debido a que los hombres tienen promedios mas concentrados y mayores en comparación 
-# a más mujeres, aunque en ambos géneros existen datos/promedios aberrantes.
 
-#########################################################################
-  
-                 #ANALISIS BIVARIANTE (Promedio vs Carrera)
-
-##########################################################################
-
-print("Comparación del Potencial por carrera")
-print("¿Hay carreras cuyos estudiantes presentan mayor Potencial?")
-print("Que carrera tiene mejor promedio en cada grupo y  que carrera es la que mejor promedio tiene en general")
-
-#Estadísticos por carrera (media, mediana, moda, etc)
-
-# Carreras con 2 materias
-estadisticas_3_por_carrera <- estudiantes_3_materias %>%
-  group_by(CARRERA) %>%
-  summarise(
-    media = mean(promedio, na.rm = TRUE),
-    mediana = median(promedio, na.rm = TRUE),
-    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
-    desviacion_estandar = sd(promedio, na.rm = TRUE),
-    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
-    sesgo = skewness(promedio, na.rm = TRUE),
-    curtosis = kurtosis(promedio, na.rm = TRUE),
-    n_estudiantes = n()
-  )
-
-print("Estadísticas para carreras de 2 materias:")
-print(estadisticas_3_por_carrera)
-
-# Carreras con 3 materias
-
-estadisticas_4_por_carrera <- estudiantes_4_materias %>%
-  group_by(CARRERA) %>%
-  summarise(
-    media = mean(promedio, na.rm = TRUE),
-    mediana = median(promedio, na.rm = TRUE),
-    moda = as.numeric(names(sort(table(promedio), decreasing = TRUE)[1])),
-    desviacion_estandar = sd(promedio, na.rm = TRUE),
-    rango_intercuartilico = IQR(promedio, na.rm = TRUE),
-    sesgo = skewness(promedio, na.rm = TRUE),
-    curtosis = kurtosis(promedio, na.rm = TRUE),
-    n_estudiantes = n()
-  )
-
-print("Estadísticas para promedio con 3 materias:")
-print(estadisticas_4_por_carrera)
-
-
-#Boxplot
-# Gráfico para Carreras con 2 materias
-ggplot(estudiantes_3_materias, aes(x = CARRERA, y = promedio)) +
-  geom_boxplot(fill = "tomato", alpha = 0.7) +
-  labs(title = "Promedio por Carrera - 2 materias",
-       x = "Carrera", y = "Promedio") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-# Gráfico para estudiantes con 3 materias
-ggplot(estudiantes_4_materias, aes(x = CARRERA, y = promedio)) +
-  geom_boxplot(fill = "turquoise4", alpha = 0.7) +
-  labs(title = "Potencial por Carrera - Estudiantes con 3 materias",
-       x = "Carrera", y = "Promedio") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
-# Conclusiones: La carrera con mejor promedio general es 
-# Ingeniería Agrícola y Biológica, del grupo de 2 materias, con una muestra de 4
-# estudiantes provenientes de esa carrera. Mientras que Computación tiene un promedio de 
-# 7.56, con 47 estudiantes. Siendo Computación la que tiene un sesgo positivo mayor al
-# Agrícola y Biológica, es decir Computación es la que mejor estudiantes sobresalientes tiene
-# aunque Agrícola y Biológica tenga un promedio mayor y menor variabilidad.
-
-##########################################################################
-
-              #MATRIZ DE CORRELACIÓN MATERIAS VS MATERIAS
-
-##########################################################################
-
-# Matriz de Correlación - Carreras que ven 4 materias
-notas_4_materias <- estudiantes_4_materias %>%
-  select(`NOTA ESTADÍSTICA`, `NOTA ÁLGEBRA`, `NOTA CÁLCULO`, `NOTA FUND. PROG.`) %>%
-  na.omit()
-matriz_correlacion_4 <- cor(notas_4_materias)
-print("Matriz de correlación - Carreras con 4 materias:")
-print(matriz_correlacion_4)
-
-corrplot(matriz_correlacion_4, method = "color", type = "upper", 
-         col = colorRampPalette(c("blue", "white", "red"))(200), 
-         tl.col = "black", tl.srt = 45, title = "Matriz de Correlación - 4 Materias", 
-         addCoef.col = "black", number.cex = 0.8)
-
-
-# Matriz de Correlación - Carreras que ven 3 materias
-notas_3_materias <- estudiantes_3_materias %>%
-  select(`NOTA ESTADÍSTICA`, `NOTA FUND. PROG.`, `NOTA CÁLCULO`) %>%
-  na.omit()
-matriz_correlacion_3 <- cor(notas_3_materias)
-print("Matriz de correlación - Carreras con 3 materias:")
-print(matriz_correlacion_3)
-
-corrplot(matriz_correlacion_3, method = "color", type = "upper", 
-         col = colorRampPalette(c("blue", "white", "red"))(200), 
-         tl.col = "black", tl.srt = 45, title = "Matriz de Correlación - 3 Materias", 
-         addCoef.col = "black", number.cex = 0.8)
-
-
-# Conclusiones: Dada nuestra matriz de Correlacion, con la materia Estadística incluida, 
-# para las carreras que ven todas las materias, la que mayor correlación tiene con estadística
-# es Algebra, es decir, la que más se relaciona. Al ser un valor de 0.51 es una relación  
-# positiva moderada, los que tienen buena nota en Algebra tienden a sacar buena nota en
-# Estadística; sin embargo no implica causalidad, solo que se mueven de forma similar.
-
-# En cambio, para los que no ven Algebra es distinto y es la materia de cálculo la que 
-# tiene mayor relación con Estadistica, con un valor de 0,34 considerándose así una
-# relación moderada baja, y así mismo si la nota de Cálculo sube, hay tendencia que
-# la de Estadistica tambien suba y viceversa.
 
 ##########################################################################
 
@@ -403,9 +206,3 @@ ggplot(datos, aes(x = `HORARIO TOMADO`, fill = `SEXO`)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-
-# Conclusiones: Hay suficiente prueba estadística para afirmar que no existe una relación
-# significativa entre el sexo del estudiante y el horario escogido. A pesar de ello,
-# se observa una fuerte predominancia del género masculino en ambos horarios, 
-# lo cual podría estar relacionado con el hecho de que, históricamente, 
-# las carreras de ingeniería han contado con una mayor participación de hombres.
