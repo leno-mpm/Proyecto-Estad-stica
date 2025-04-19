@@ -118,7 +118,7 @@ ggplot(datos_comp, aes(x = promedio, y = `NOTA ESTADÍSTICA`)) +
   geom_smooth(method = "lm", se = TRUE, color = "darkred", linetype = "dashed") +
   geom_hline(yintercept = media_y, color = "forestgreen", linetype = "dotted", size = 1) +
   labs(
-    title = "Relación entre Promedio y Nota de Estadística (Mecatrónica)",
+    title = "Relación entre Promedio y Nota de Estadística (Computación)",
     subtitle = paste("Línea verde punteada: ȳ =", round(media_y, 2)),
     x = "Promedio (Álgebra, Cálculo, Fund. de Prog.)",
     y = "Nota de Estadística"
