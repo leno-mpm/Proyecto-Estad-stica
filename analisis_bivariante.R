@@ -201,8 +201,10 @@ if(chi2_test$p.value < 0.05) {
 # Gráfico de barras apiladas para visualizar la relación
 ggplot(datos, aes(x = `HORARIO TOMADO`, fill = `SEXO`)) +
   geom_bar(position = "fill", color = "black", alpha = 0.7) +
+  scale_fill_manual(values = c("H" = "blue", "M" = "pink")) +
   labs(title = "Distribución del Género por Horario Académico",
        x = "Horario", y = "Proporción", fill = "Género") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 
