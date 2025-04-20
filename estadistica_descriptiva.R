@@ -57,7 +57,7 @@ ggplot(algebra, aes(x = `NOTA ÁLGEBRA`)) +
 
 print("Boxplot - Álgebra")
 ggplot(algebra, aes(y = `NOTA ÁLGEBRA`)) +
-  geom_boxplot(fill = "orange", color = "black") +
+  geom_boxplot(fill = "skyblue", color = "black") +
   labs(title = "Boxplot de Notas de Álgebra", y = "Nota") +
   theme_minimal()
 
@@ -90,13 +90,13 @@ print(estadisticas_estadistica)
 
 print("Histograma de frecuencias - Estadística")
 ggplot(estadistica, aes(x = `NOTA ESTADÍSTICA`)) +
-  geom_histogram(binwidth = 0.45, fill = "lightblue", color = "black") +
+  geom_histogram(binwidth = 0.45, fill = "skyblue", color = "black") +
   labs(title = "Histograma de Notas de Estadística", x = "Nota", y = "Frecuencia") +
   theme_minimal()
 
 print("Boxplot - Estadística")
 ggplot(estadistica, aes(y = `NOTA ESTADÍSTICA`)) +
-  geom_boxplot(fill = "lightblue", color = "black") +
+  geom_boxplot(fill = "skyblue", color = "black") +
   labs(title = "Boxplot de Notas de Estadística", y = "Nota") +
   theme_minimal()
 
@@ -127,13 +127,13 @@ print(estadisticas_calculo)
 
 print("Histograma de frecuencias - Cálculo")
 ggplot(calculo, aes(x = `NOTA CÁLCULO`)) +
-  geom_histogram(binwidth = 0.5, fill = "lightgreen", color = "black") +
+  geom_histogram(binwidth = 0.5, fill = "skyblue", color = "black") +
   labs(title = "Histograma de Notas de Cálculo", x = "Nota", y = "Frecuencia") +
   theme_minimal()
 
 print("Boxplot - Cálculo")
 ggplot(calculo, aes(y = `NOTA CÁLCULO`)) +
-  geom_boxplot(fill = "lightblue", color = "black") +
+  geom_boxplot(fill = "skyblue", color = "black") +
   labs(title = "Boxplot de Notas de Cálculo", y = "Nota") +
   theme_minimal()
 
@@ -172,7 +172,7 @@ cat("Curtosis:", curtosis, "\n")
 
 print("Histogramas de frecuencia")
 ggplot(datos, aes(x = `NOTA FUND. PROG.`)) +
-  geom_histogram(binwidth = 1, fill = "steelblue", color = "black") +
+  geom_histogram(binwidth = 1, fill = "skyblue", color = "black") +
   labs(
     title = "Histograma de Frecuencias - Fundamentos de Programación",
     x = "Nota",
@@ -183,7 +183,7 @@ ggplot(datos, aes(x = `NOTA FUND. PROG.`)) +
 print("Boxplot")
 # Boxplot
 ggplot(datos, aes(y = `NOTA FUND. PROG.`)) +
-  geom_boxplot(fill = "tomato", color = "black") +
+  geom_boxplot(fill = "skyblue", color = "black") +
   labs(
     title = "Boxplot - Fundamentos de Programación",
     y = "Nota"
@@ -217,14 +217,14 @@ print(estadisticas_promedio)
 
 print("Histograma de Frecuencias - Promedio")
 ggplot(promedio_df, aes(x = promedio)) +
-  geom_histogram(binwidth = 0.5, fill = "mediumorchid", color = "black") +
+  geom_histogram(binwidth = 0.5, fill = "skyblue", color = "black") +
   labs(title = "Histograma de Promedio",
        x = "Promedio", y = "Frecuencia") +
   theme_minimal()
 
 print("Boxplot - Promedio")
 ggplot(promedio_df, aes(y = promedio)) +
-  geom_boxplot(fill = "plum", color = "black") +
+  geom_boxplot(fill = "skyblue", color = "black") +
   labs(title = "Boxplot del Promedio", y = "Promedio") +
   theme_minimal()
 
@@ -294,7 +294,6 @@ ggplot(datos, aes(x = `HORARIO TOMADO`)) +
   theme(axis.text.x = element_text(angle = 0, hjust = 1))
 
 
-
 ##########################################################################
 
     #ANALISIS POR RENDIMIENTO ACADÉMICO ~ Variable cualitativa
@@ -316,10 +315,8 @@ print(prop.table(table(datos$RENDIMIENTO)))
 
 # Gráfico de barras de rendimiento académico
 ggplot(datos, aes(x = RENDIMIENTO)) +
-  geom_bar(fill = "lightgreen", color = "black", alpha = 0.7) +
+  geom_bar(fill = "skyblue", color = "black", alpha = 0.7) +
   labs(title = "Distribución de Estudiantes por Rendimiento Académico",
        x = "Rendimiento", y = "Frecuencia") +
   theme_minimal()
-
-
 
