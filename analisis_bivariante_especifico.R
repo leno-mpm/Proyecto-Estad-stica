@@ -79,7 +79,7 @@ print(estadisticas_4_por_carrera)
 #Boxplot
 # Gráfico para Carreras con 2 materias
 ggplot(estudiantes_3_materias, aes(x = CARRERA, y = promedio)) +
-  geom_boxplot(fill = "tomato", alpha = 0.7) +
+  geom_boxplot(fill = "salmon", alpha = 0.7) +
   labs(title = "Promedio por Carrera - 2 materias",
        x = "Carrera", y = "Promedio") +
   theme_minimal() +
@@ -131,7 +131,7 @@ ggplot(datos_meca, aes(x = rendimiento, y = `NOTA ESTADÍSTICA`, fill = rendimie
   labs(title = "Boxplot de Nota de Estadística según Rendimiento General",
        x = "Rendimiento (según promedio materias previas)",
        y = "Nota de Estadística") +
-  scale_fill_manual(values = c("Alto" = "seagreen", "Bajo" = "tomato")) +
+  scale_fill_manual(values = c("Alto" = "turquoise4", "Bajo" = "salmon")) +
   theme_minimal()
 
 print("Gráfico de dispersión entre promedio de materias vs Nota de estadísta pero agrupadolo por rendimiento)")
@@ -144,7 +144,7 @@ ggplot(datos_meca, aes(x = promedio, y = `NOTA ESTADÍSTICA`, color = grupo_colo
        x = "Promedio de materias previas",
        y = "Nota de Estadística",
        color = "Rendimiento") +
-  scale_color_manual(values = c("Alto" = "seagreen", "Bajo" = "firebrick")) +
+  scale_color_manual(values = c("Alto" = "turquoise4", "Bajo" = "salmon")) +
   theme_minimal()
 
 
@@ -179,7 +179,7 @@ ggplot(datos_meca, aes(x = `HORARIO TOMADO`, fill = rendimiento)) +
        x = "Horario Tomado de Estadística",
        y = "Cantidad de Estudiantes",
        fill = "Rendimiento Previo") +
-  scale_fill_manual(values = c("Bajo" = "salmon", "Alto" = "seagreen")) +
+  scale_fill_manual(values = c("Bajo" = "salmon", "Alto" = "turquoise4")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -217,7 +217,7 @@ print(estadisticas_por_horario)
 
 #Boxplot comparativo
 ggplot(alto_rendimiento, aes(x = `HORARIO TOMADO`, y = `NOTA ESTADÍSTICA`)) +
-  geom_boxplot(fill = "lightgreen", color = "black") +
+  geom_boxplot(fill = "turquoise4", color = "black") +
   labs(
     title = "Notas de Estadística según Horario (Estudiantes de Alto Rendimiento)",
     x = "Horario Tomado",
@@ -232,7 +232,7 @@ bajo_rendimiento <- datos_meca %>%
   filter(promedio < 7.5 & !is.na(`NOTA ESTADÍSTICA`) & !is.na(`HORARIO TOMADO`))
 
 ggplot(bajo_rendimiento, aes(x = `HORARIO TOMADO`, y = `NOTA ESTADÍSTICA`)) +
-  geom_boxplot(fill = "lightcoral", color = "black") +
+  geom_boxplot(fill = "salmon", color = "black") +
   labs(
     title = "Notas de Estadística según Horario Académico (Bajo Rendimiento)",
     x = "Horario Académico",
@@ -274,7 +274,7 @@ ggplot(datos_comp, aes(x = rendimiento, y = `NOTA ESTADÍSTICA`, fill = rendimie
   labs(title = "Boxplot de Nota de Estadística según Rendimiento General",
        x = "Rendimiento (según promedio materias previas)",
        y = "Nota de Estadística") +
-  scale_fill_manual(values = c("Alto" = "seagreen", "Bajo" = "tomato")) +
+  scale_fill_manual(values = c("Alto" = "turquoise4", "Bajo" = "salmon")) +
   theme_minimal()
 
 print("Gráfico de dispersión entre promedio de materias vs Nota de estadísta pero agrupadolo por rendimiento)")
@@ -287,7 +287,7 @@ ggplot(datos_comp, aes(x = promedio, y = `NOTA ESTADÍSTICA`, color = grupo_colo
        x = "Promedio de materias previas",
        y = "Nota de Estadística",
        color = "Rendimiento") +
-  scale_color_manual(values = c("Alto" = "seagreen", "Bajo" = "firebrick")) +
+  scale_color_manual(values = c("Alto" = "turquoise4", "Bajo" = "salmon")) +
   theme_minimal()
 
 
@@ -322,7 +322,7 @@ ggplot(datos_comp , aes(x = `HORARIO TOMADO`, fill = rendimiento)) +
        x = "Horario Tomado de Estadística",
        y = "Cantidad de Estudiantes",
        fill = "Rendimiento Previo") +
-  scale_fill_manual(values = c("Bajo" = "salmon", "Alto" = "seagreen")) +
+  scale_fill_manual(values = c("Bajo" = "salmon", "Alto" = "turquoise4")) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
@@ -360,7 +360,7 @@ print(estadisticas_por_horario2)
 
 #Boxplot comparativo
 ggplot(alto_rendimiento2, aes(x = `HORARIO TOMADO`, y = `NOTA ESTADÍSTICA`)) +
-  geom_boxplot(fill = "lightgreen", color = "black") +
+  geom_boxplot(fill = "turquoise4", color = "black") +
   labs(
     title = "Notas de Estadística según Horario (Estudiantes de Alto Rendimiento)",
     x = "Horario Tomado",
@@ -375,7 +375,7 @@ bajo_rendimiento2 <- datos_comp %>%
   filter(promedio < 7.5 & !is.na(`NOTA ESTADÍSTICA`) & !is.na(`HORARIO TOMADO`))
 
 ggplot(bajo_rendimiento2, aes(x = `HORARIO TOMADO`, y = `NOTA ESTADÍSTICA`)) +
-  geom_boxplot(fill = "lightcoral", color = "black") +
+  geom_boxplot(fill = "salmon", color = "black") +
   labs(
     title = "Notas de Estadística según Horario Académico (Bajo Rendimiento)",
     x = "Horario Académico",
